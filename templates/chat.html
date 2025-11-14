@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindEase - Chat</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Satisfy&display=swap');
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+
+            background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        h2 {
+            font-family: "Caveat", cursive;
+            text-align: center;
+            margin: 0;
+            padding: 20px 0;
+            font-size: 3rem;
+            color: white;
+        }
+
+        #chat-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            background: rgba(255, 255, 255, 0.15);
+            margin: 0 15%;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+        }
+
+        .bubble {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 12px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .user {
+            align-self: flex-end;
+            background-color: rgba(74, 216, 255, 0.8);
+            color: black;
+            border-bottom-right-radius: 0;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: black;
+            border-bottom-left-radius: 0;
+        }
+
+        form {
+            display: flex;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            margin-left: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #34a59f;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>MindEase Chat</h2>
+
+    <div id="chat-box">
+        <div class="bubble bot">Hello! How are you feeling today?</div>
+    </div>
+
+    <form id="chat-form">
+        <input type="text" id="user-input" placeholder="Type your message..." required />
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        const chatBox = document.getElementById("chat-box");
+
+        function addMessage(text, sender) {
+            const div = document.createElement("div");
+            div.className = `bubble ${sender}`;
+            div.textContent = text;
+            chatBox.appendChild(div);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        document.getElementById("chat-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const input = document.getElementById("user-input");
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage(message, "user");
+            input.value = "";
+
+            // Send to Flask backend
+            const res = await fetch("/chat/message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await res.json();
+            addMessage(data.reply, "bot");
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='icons8-brain-16.png') }}">
+    <title>MindEase - Home</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Satisfy&display=swap');
+
+        body {
+            font-family: Arial, sans-serif;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            background: #020024;
+            background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+            
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            font-family: "Caveat", cursive;
+            font-weight: 900;
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-family: "Caveat", cursive;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            transition: 0.3s ease;
+            width: 70px;
+        }
+
+        a:hover {
+            background-color: #34a59f;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to MindEase <img src="{{ url_for('static', filename='icons8-brain-100.png') }}" alt=""></h1>
+    <p>Your mental wellness companion</p>
+
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+    <a href="/chat">Chat</a>
+
+</body>
+
+</html>
