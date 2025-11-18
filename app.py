@@ -5,7 +5,7 @@ from services.llm_service import get_llm_response  # <--- New Import
 import os
 
 app = Flask(__name__)
-app.secret_key = "change_this_to_a_random_secret_string" 
+app.secret_key = "Everthing is okay" 
 CORS(app)
 
 @app.route('/')
