@@ -4,356 +4,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='icons8-brain-16.png') }}" type="image/png">
+    <link rel="shortcut icon" href="/icons8-brain-16.png" type="image/png">
     <title>MindEase - Login</title>
 
     <style>
-        /* Import modern fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Poppins:wght@300;400;500;600&display=swap');
-
-        * {
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Satisfy&display=swap');
 
         body {
-            margin: 0;
-            height: 100vh;
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
+
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+
+            background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+            height: 100vh;
+            margin: 0;
             color: white;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* --- Decorative Background Blobs --- */
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(70px);
-            z-index: 0;
-            opacity: 0.6;
-            animation: float 10s infinite ease-in-out;
-        }
-
-        .blob-1 {
-            top: -10%;
-            left: -10%;
-            width: 500px;
-            height: 500px;
-            background: #ff00cc;
-            animation-delay: 0s;
-        }
-
-        .blob-2 {
-            bottom: -10%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: #333399;
-            animation-delay: 2s;
-        }
-
-        .blob-3 {
-            top: 20%;
-            right: 20%;
-            width: 200px;
-            height: 200px;
-            background: #00d2ff;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            50% {
-                transform: translate(30px, 50px);
-            }
-
-            100% {
-                transform: translate(0, 0);
-            }
-        }
-
-        /* --- Glass Card --- */
-        .login-container {
-            position: relative;
-            z-index: 1;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            width: 400px;
             text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         h2 {
             font-family: "Caveat", cursive;
-            font-size: 3.5rem;
-            margin: 0 0 5px 0;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        p.subtitle {
-            margin-bottom: 25px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* --- Inputs --- */
-        .input-group {
+            font-size: 3rem;
             margin-bottom: 15px;
-            text-align: left;
         }
 
-        label {
-            font-size: 0.85rem;
-            margin-left: 10px;
-            color: rgba(255, 255, 255, 0.8);
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
         input {
-            width: 100%;
-            padding: 12px 15px;
-            margin-top: 5px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
+            width: 250px;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
             outline: none;
-            transition: 0.3s;
         }
 
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        input:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #00d2ff;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
-        }
-
-        /* --- Standard Login Button --- */
-        .btn-login {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
+        button {
+            padding: 12px 25px;
+            background-color: #4CAF50;
             border: none;
-            border-radius: 30px;
-            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
             color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 5px;
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
-        }
-
-        .btn-login:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 20px rgba(0, 210, 255, 0.6);
-        }
-
-        /* --- Google Button --- */
-        .btn-google {
-            width: 100%;
-            padding: 12px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 30px;
-            background: white;
-            color: #333;
             font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
             transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
 
-        .btn-google:hover {
-            transform: scale(1.03);
-            background: #f1f1f1;
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        .divider {
-            margin: 20px 0;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-            position: relative;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .divider::before {
-            left: 0;
-        }
-
-        .divider::after {
-            right: 0;
-        }
-
-        .links {
-            margin-top: 25px;
-            font-size: 0.9rem;
+        button:hover {
+            background-color: #34a59f;
+            transform: scale(1.05);
         }
 
         a {
-            color: #00d2ff;
+            color: #d5faff;
             text-decoration: none;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        a:hover {
-            color: #fff;
-            text-shadow: 0 0 5px #00d2ff;
-        }
-
-        .error-msg {
-            background: rgba(255, 82, 82, 0.2);
-            border: 1px solid #ff5252;
-            color: #ff867c;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            margin-top: 10px;
+            display: inline-block;
         }
     </style>
 </head>
 
 <body>
+    <h2>Login to MindEase</h2>
 
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-
-    <div class="login-container">
-        <h2>MindEase</h2>
-        <p class="subtitle">Welcome back, friend! 🌿</p>
-
+    <div class="card">
         {% if error %}
-        <div class="error-msg">{{ error }}</div>
+        <p style="color: #ff6b6b; background: rgba(0,0,0,0.5); padding: 5px;">{{ error }}</p>
         {% endif %}
-
         <form method="POST" action="/login">
-            <div class="input-group">
-                <label>Email Address</label>
-                <input type="email" name="email" placeholder="name@example.com" required autocomplete="off" />
-            </div>
-
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" name="password" placeholder="••••••••" required />
-            </div>
-
-            <button type="submit" class="btn-login">Sign In</button>
+            <input type="email" name="email" placeholder="Enter your email" required />
+            <input type="password" name="password" placeholder="Enter your password" required />
+            <button type="submit">Login</button>
         </form>
-
-        <div class="divider">OR</div>
-
-        <!-- Google Login Button -->
-        <button class="btn-google" onclick="signInWithGoogle()">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
-                class="google-icon" alt="G">
-            Continue with Google
-        </button>
-
-        <div class="links">
-            New here? <a href="/register">Create an Account</a>
-        </div>
     </div>
 
-    <!-- --- FIREBASE LOGIC --- -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // ⚠️ REPLACE THIS WITH YOUR REAL FIREBASE CONFIG FROM CONSOLE
-        // Do NOT use the [url](url) format inside strings. Just the URL.
-        const firebaseConfig = {
-            apiKey: "AIzaSyDVUvI_Lhu3tY293Vn7YCnQe9DNvM7huGc",
-            authDomain: "mindease-db.firebaseapp.com",
-            projectId: "mindease-db",
-            storageBucket: "mindease-db.firebasestorage.app",
-            messagingSenderId: "797758306232",
-            appId: "1:797758306232:web:798c26d62633c2df52c14d"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        // Make function available globally so button can call it
-        window.signInWithGoogle = function () {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log("Google User:", user);
-
-                    // Send this user data to your Python backend
-                    fetch('/google_login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email: user.email,
-                            name: user.displayName
-                        })
-                    }).then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                // Use the URL provided by the backend to support Admin redirect
-                                window.location.href = data.redirect_url;
-                            }
-                        });
-                }).catch((error) => {
-                    console.error("Error during Google Sign-In:", error);
-                    alert("Google Sign-In failed. Please check console.");
-                });
-        }
-    </script>
-
+    <a href="/register">Don't have an account? Register</a>
 </body>
 
 </html>
