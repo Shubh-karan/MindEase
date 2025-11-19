@@ -3,7 +3,6 @@ from flask_cors import CORS
 from textblob import TextBlob
 import os
 
-# Import all necessary services
 from services.firebase_service import (
     create_user, 
     verify_user, 
@@ -45,35 +44,29 @@ def login():
             
     return render_template('login.html')
 
-# --- UPDATED GOOGLE LOGIN ROUTE ---
 @app.route('/google_login', methods=['POST'])
 def google_login():
     data = request.get_json()
     email = data.get('email')
     name = data.get('name')
     
-    # 1. Register if new
     create_user(name, email, "google_auth_user")
     
-    # 2. Get real role from DB
     existing_user = get_user(email)
     role = 'user'
     if existing_user:
         role = existing_user.get('role', 'user')
 
-    # 3. Set Session
     session['user_email'] = email
     session['user_name'] = name
     session['role'] = role
     session['history'] = []
     
-    # 4. Decide where to send them
     if role == 'admin':
         target_url = url_for('admin_dashboard')
     else:
         target_url = url_for('chat')
     
-    # Send the target URL back to the frontend
     return jsonify({'status': 'success', 'redirect_url': target_url})
 
 @app.route('/register', methods=['GET', 'POST'])

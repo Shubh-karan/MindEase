@@ -7,7 +7,6 @@
     <title>MindEase - Chat</title>
 
     <style>
-        /* Import Fonts: Caveat for headings, Poppins for readable text */
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
 
@@ -19,10 +18,9 @@
             background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
             font-family: 'Poppins', sans-serif;
             color: white;
-            overflow: hidden; /* Prevent scrolling when modal is open */
+            overflow: hidden;
         }
 
-        /* --- Header with Breathing Button --- */
         .header {
             display: flex;
             justify-content: space-between;
@@ -38,7 +36,6 @@
             font-size: 2.5rem;
         }
 
-        /* The New Relax Button */
         .breathe-btn {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
@@ -59,7 +56,6 @@
             transform: scale(1.05);
         }
 
-        /* --- Chat Box --- */
         #chat-box {
             flex-grow: 1;
             padding: 20px;
@@ -72,7 +68,7 @@
             border-radius: 10px;
             backdrop-filter: blur(10px);
             box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
-            scrollbar-width: none; /* Hide scrollbar for cleaner look */
+            scrollbar-width: none; 
         }
 
         .bubble {
@@ -104,7 +100,6 @@
             border-bottom-left-radius: 0;
         }
 
-        /* --- Input Area --- */
         form {
             display: flex;
             padding: 20px 15%;
@@ -140,15 +135,14 @@
             transform: scale(1.05);
         }
 
-        /* --- NEW: BREATHING EXERCISE OVERLAY --- */
         #breathing-modal {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9); /* Dark overlay */
+            background-color: rgba(0, 0, 0, 0.9); 
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -165,7 +159,6 @@
             width: 300px;
         }
 
-        /* The Animated Circle */
         .circle {
             background-color: #fff;
             height: 100%;
@@ -174,7 +167,7 @@
             position: absolute;
             opacity: 0.8;
             box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
-            transform: scale(0.3); /* Start small */
+            transform: scale(0.3);
         }
 
         #instruction {
@@ -203,7 +196,6 @@
             color: black;
         }
 
-        /* --- Animations --- */
         .grow {
             animation: grow 4s linear forwards;
         }
@@ -221,7 +213,6 @@
             to { transform: scale(0.3); }
         }
 
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .header, #chat-box, form {
                 padding-left: 20px;
@@ -236,7 +227,6 @@
 
 <body>
 
-    <!-- Header with the new 'Relax' Button -->
     <div class="header">
         <h2>MindEase Chat</h2>
         <button class="breathe-btn" onclick="openBreathing()">
@@ -244,19 +234,15 @@
         </button>
     </div>
 
-    <!-- Chat Area -->
     <div id="chat-box">
-        <!-- Uses the 'username' passed from app.py -->
         <div class="bubble bot">Hello {{ username }}! I'm here for you. How are you feeling right now? 🌿</div>
     </div>
 
-    <!-- Input Area -->
     <form id="chat-form">
         <input type="text" id="user-input" placeholder="Type your message..." required autocomplete="off"/>
         <button type="submit">Send</button>
     </form>
 
-    <!-- --- HIDDEN BREATHING MODAL --- -->
     <div id="breathing-modal">
         <div class="circle-container">
             <div class="circle" id="breathing-circle"></div>
@@ -265,9 +251,7 @@
         <button class="close-btn" onclick="closeBreathing()">Stop Exercise</button>
     </div>
 
-    <!-- Scripts -->
     <script>
-        // --- Chat Logic ---
         const chatBox = document.getElementById("chat-box");
 
         function addMessage(text, sender) {
@@ -287,7 +271,6 @@
             addMessage(message, "user");
             input.value = "";
 
-            // Show a loading indicator while waiting for AI
             const loadingDiv = document.createElement("div");
             loadingDiv.className = "bubble bot";
             loadingDiv.textContent = "...";
@@ -296,7 +279,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // Send to Flask backend
                 const res = await fetch("/chat/message", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -305,12 +287,10 @@
 
                 const data = await res.json();
                 
-                // Remove loading bubble and show real response
                 document.getElementById("loading-bubble").remove();
                 addMessage(data.reply, "bot");
 
             } catch (error) {
-                // Handle internet errors gracefully
                 if(document.getElementById("loading-bubble")) {
                     document.getElementById("loading-bubble").remove();
                 }
@@ -318,39 +298,34 @@
             }
         });
 
-        // --- Breathing Tool Logic ---
         const modal = document.getElementById("breathing-modal");
         const circle = document.getElementById("breathing-circle");
         const instruction = document.getElementById("instruction");
         let breathingInterval;
 
         function openBreathing() {
-            modal.style.display = "flex"; // Show overlay
+            modal.style.display = "flex"; 
             instruction.innerText = "Inhale...";
-            circle.className = 'circle grow'; // Start animation
+            circle.className = 'circle grow'; 
             
-            // Start the cycle immediately
             breatheCycle();
-            // Repeat every 8 seconds (4s inhale + 4s exhale)
             breathingInterval = setInterval(breatheCycle, 8000);
         }
 
         function closeBreathing() {
-            modal.style.display = "none"; // Hide overlay
-            clearInterval(breathingInterval); // Stop the timer
-            circle.className = 'circle'; // Reset animation
+            modal.style.display = "none"; 
+            clearInterval(breathingInterval);
+            circle.className = 'circle';
         }
 
         function breatheCycle() {
-            // 1. Inhale Phase (4 Seconds)
             instruction.innerText = "Inhale...";
             circle.className = 'circle grow';
 
             setTimeout(() => {
-                // 2. Exhale Phase (4 Seconds)
                 instruction.innerText = "Exhale...";
                 circle.className = 'circle shrink';
-            }, 4000); // Switch after 4 seconds
+            }, 4000);
         }
     </script>
 

@@ -2,17 +2,14 @@ import os
 from groq import Groq
 from dotenv import load_dotenv
 
-# Force Python to look in the main project folder for .env
 base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env_path = os.path.join(base_path, '.env')
 load_dotenv(env_path)
 
-# Initialize the Groq client
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
 )
 
-# --- THE PERSONA ---
 SYSTEM_PROMPT = """
 You are MindEase, a warm, compassionate, and supportive mental wellness companion for students. 
 Your goal is to listen without judgment, validate feelings, and offer gentle, actionable advice.
@@ -31,19 +28,14 @@ def get_llm_response(user_message, chat_history):
     Sends the message + conversation history to Llama 3.
     """
     try:
-        # Prepare the conversation structure
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         
-        # Add the recent chat history (Context)
         messages.extend(chat_history)
         
-        # Add the user's current message
         messages.append({"role": "user", "content": user_message})
 
-        # Call the API
         chat_completion = client.chat.completions.create(
             messages=messages,
-            # Using the faster model to save tokens
             model="llama-3.1-8b-instant", 
             temperature=0.7,        
             max_tokens=300,         
@@ -55,8 +47,6 @@ def get_llm_response(user_message, chat_history):
         print(f"Error calling Groq API: {e}")
         return "I'm having a little trouble connecting to my thoughts right now. Could you try saying that again? 🌿"
 
-# --- NEW FUNCTION: ZEN STORY GENERATOR ---
-# This was missing from your file!
 def generate_zen_story(user_worry):
     """
     Generates a short, calming visualization script based on the specific worry.

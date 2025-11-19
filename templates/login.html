@@ -8,7 +8,6 @@
     <title>MindEase - Login</title>
 
     <style>
-        /* Import modern fonts */
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Poppins:wght@300;400;500;600&display=swap');
 
         * {
@@ -28,7 +27,6 @@
             position: relative;
         }
 
-        /* --- Decorative Background Blobs --- */
         .blob {
             position: absolute;
             border-radius: 50%;
@@ -79,7 +77,6 @@
             }
         }
 
-        /* --- Glass Card --- */
         .login-container {
             position: relative;
             z-index: 1;
@@ -121,7 +118,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* --- Inputs --- */
         .input-group {
             margin-bottom: 15px;
             text-align: left;
@@ -157,7 +153,6 @@
             box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
         }
 
-        /* --- Standard Login Button --- */
         .btn-login {
             width: 100%;
             padding: 12px;
@@ -178,7 +173,6 @@
             box-shadow: 0 8px 20px rgba(0, 210, 255, 0.6);
         }
 
-        /* --- Google Button --- */
         .btn-google {
             width: 100%;
             padding: 12px;
@@ -292,7 +286,6 @@
 
         <div class="divider">OR</div>
 
-        <!-- Google Login Button -->
         <button class="btn-google" onclick="signInWithGoogle()">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
                 class="google-icon" alt="G">
@@ -304,13 +297,10 @@
         </div>
     </div>
 
-    <!-- --- FIREBASE LOGIC --- -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // ⚠️ REPLACE THIS WITH YOUR REAL FIREBASE CONFIG FROM CONSOLE
-        // Do NOT use the [url](url) format inside strings. Just the URL.
         const firebaseConfig = {
             apiKey: "AIzaSyDVUvI_Lhu3tY293Vn7YCnQe9DNvM7huGc",
             authDomain: "mindease-db.firebaseapp.com",
@@ -320,19 +310,16 @@
             appId: "1:797758306232:web:798c26d62633c2df52c14d"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Make function available globally so button can call it
         window.signInWithGoogle = function () {
             signInWithPopup(auth, provider)
                 .then((result) => {
                     const user = result.user;
                     console.log("Google User:", user);
 
-                    // Send this user data to your Python backend
                     fetch('/google_login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -343,7 +330,6 @@
                     }).then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
-                                // Use the URL provided by the backend to support Admin redirect
                                 window.location.href = data.redirect_url;
                             }
                         });

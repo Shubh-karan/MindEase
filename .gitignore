@@ -1,4 +1,3 @@
-# --- Python & Virtual Environment ---
 venv/
 VENV/
 env/
@@ -9,12 +8,9 @@ __pycache__/
 *.pyo
 *.pyd
 
-# --- Flask Specific ---
-# Flask often uses this folder for sensitive config
 instance/
 .webassets-cache
 
-# --- Environment Variables & Secrets (CRITICAL) ---
 .env
 .flaskenv
 firebase_key.json
@@ -22,25 +18,20 @@ dialogflow_key.json
 client_secret.json
 *.pem
 
-# --- Operating System Files ---
-# Mac
 .DS_Store
-# Windows
+
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# --- IDE & Editor Settings ---
 .vscode/
 .idea/
 *.swp
 
-# --- Logs & Databases ---
 *.log
 *.sqlite
 *.db
 
-# --- Testing & Coverage (Good to have for future) ---
 .pytest_cache/
 .coverage
 htmlcov/

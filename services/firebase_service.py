@@ -2,15 +2,10 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 
-# --- ROBUST PATH FINDING ---
-# 1. Get the folder where THIS file is (backend/services)
 current_dir = os.path.dirname(os.path.abspath(__file__))
-# 2. Get the backend folder (parent of services)
 backend_dir = os.path.dirname(current_dir)
-# 3. Get the main project folder (parent of backend)
 root_dir = os.path.dirname(backend_dir)
 
-# Try finding the key in 'backend' first, then 'root'
 key_filename = "firebase_key.json"
 key_path_backend = os.path.join(backend_dir, key_filename)
 key_path_root = os.path.join(root_dir, key_filename)
@@ -25,9 +20,7 @@ else:
     print(f"❌ ERROR: Could not find {key_filename} in either:")
     print(f"   1. {key_path_backend}")
     print(f"   2. {key_path_root}")
-    # Allow it to fail naturally below if path is wrong
-
-# Initialize Firebase only once
+    
 if not firebase_admin._apps:
     if os.path.exists(key_path):
         cred = credentials.Certificate(key_path)
