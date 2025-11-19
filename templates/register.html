@@ -4,86 +4,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/icons8-brain-16.png" type="image/png">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='icons8-brain-16.png') }}" type="image/png">
     <title>MindEase - Register</title>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Satisfy&display=swap');
+        /* Import modern fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Poppins:wght@300;400;500;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: Arial, sans-serif;
-
+            margin: 0;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-
-            background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-            height: 100vh;
-            margin: 0;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Decorative Background Blobs --- */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            z-index: 0;
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: #ff00cc; /* Pink/Purple */
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: #333399; /* Deep Blue */
+            animation-delay: 2s;
+        }
+
+        .blob-3 {
+            top: 20%;
+            right: 20%;
+            width: 200px;
+            height: 200px;
+            background: #00d2ff; /* Cyan */
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 50px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* --- Glass Card --- */
+        .register-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 400px;
             text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             font-family: "Caveat", cursive;
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 3.5rem;
+            margin: 0 0 5px 0;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            line-height: 1;
         }
-        .card {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 30px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+
+        p.subtitle {
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* --- Inputs --- */
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 0.85rem;
+            margin-left: 10px;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         input {
-            width: 250px;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-            outline: none;
-        }
-        button {
-            padding: 12px 25px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.3s;
             width: 100%;
+            padding: 12px 15px;
+            margin-top: 5px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.3s;
         }
-        button:hover {
-            background-color: #34a59f;
-            transform: scale(1.05);
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
-        a {
-            color: #d5faff;
-            text-decoration: none;
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00d2ff;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        /* --- Button --- */
+        button {
+            width: 100%;
+            padding: 15px;
             margin-top: 10px;
-            display: inline-block;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 210, 255, 0.6);
+        }
+
+        /* --- Links --- */
+        .links {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: #00d2ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        a:hover {
+            color: #fff;
+            text-shadow: 0 0 5px #00d2ff;
+        }
+
+        /* --- Error Message --- */
+        .error-msg {
+            background: rgba(255, 82, 82, 0.2);
+            border: 1px solid #ff5252;
+            color: #ff867c;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body>
-    <h2>Create Your MindEase Account</h2>
 
-    <div class="card">
+    <!-- Decorative Shapes -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="register-container">
+        <h2>Join MindEase</h2>
+        <p class="subtitle">Start your journey to wellness 🌿</p>
+
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
         <form method="POST" action="/register">
-            <input type="text" name="name" placeholder="Full Name" required />
-            <input type="email" name="email" placeholder="Email Address" required />
-            <input type="password" name="password" placeholder="Create Password" required />
-            <button type="submit">Register</button>
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="John Doe" required autocomplete="off"/>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="name@example.com" required autocomplete="off"/>
+            </div>
+            
+            <div class="input-group">
+                <label>Create Password</label>
+                <input type="password" name="password" placeholder="••••••••" required />
+            </div>
+
+            <button type="submit">Create Account</button>
         </form>
+
+        <div class="links">
+            Already have an account? <a href="/login">Sign In</a>
+        </div>
     </div>
 
-    <a href="/login">Already have an account? Login</a>
 </body>
 
 </html>
