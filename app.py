@@ -14,7 +14,7 @@ from services.firebase_service import (
 from services.llm_service import get_llm_response, generate_zen_story
 
 app = Flask(__name__)
-app.secret_key = "Everthing is okay" 
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 CORS(app)
 
 @app.route('/')
@@ -88,7 +88,7 @@ def register():
 @app.route('/chat')
 def chat():
     if 'user_email' not in session:
-        return redirect(url_for('login'))
+        return redirect (url_for('login'))
     return render_template('chat.html', username=session.get('user_name'))
 
 @app.route('/chat/message', methods=['POST'])
