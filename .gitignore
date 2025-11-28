@@ -19,7 +19,6 @@ client_secret.json
 *.pem
 
 .DS_Store
-
 Thumbs.db
 ehthumbs.db
 Desktop.ini

@@ -9,6 +9,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap');
 
         body {
             margin: 0;
@@ -28,15 +30,13 @@
             padding: 15px 15%;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(5px);
+            z-index: 10;
         }
-
-        h2 {
-            font-family: "Caveat", cursive;
-            margin: 0;
-            font-size: 2.5rem;
-        }
-
-        .breathe-btn {
+        .header h2 { font-family: "Caveat", cursive; margin: 0; font-size: 2.5rem; }
+        
+        .header-right { display: flex; gap: 10px; }
+        
+        .header-btn {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
             color: white;
@@ -49,12 +49,13 @@
             align-items: center;
             gap: 8px;
             font-weight: 500;
+            font-size: 0.9rem;
         }
+        .header-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.05); }
 
-        .breathe-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.05);
-        }
+        .focus-btn { background: rgba(255, 193, 7, 0.2); border-color: rgba(255, 193, 7, 0.5); }
+        .shred-btn { background: rgba(255, 82, 82, 0.2); border-color: rgba(255, 82, 82, 0.5); }
+        .zen-btn { background: rgba(156, 39, 176, 0.2); border-color: rgba(156, 39, 176, 0.5); }
 
         #chat-box {
             flex-grow: 1;
@@ -70,7 +71,6 @@
             box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
             scrollbar-width: none; 
         }
-
         .bubble {
             max-width: 70%;
             padding: 12px 18px;
@@ -79,148 +79,64 @@
             font-size: 1rem;
             animation: fadeIn 0.3s ease;
         }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .user { align-self: flex-end; background-color: rgba(74, 216, 255, 0.8); color: #00334e; border-bottom-right-radius: 0; font-weight: 500; }
+        .bot { align-self: flex-start; background-color: rgba(255, 255, 255, 0.9); color: #333; border-bottom-left-radius: 0; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .user {
-            align-self: flex-end;
-            background-color: rgba(74, 216, 255, 0.8);
-            color: #00334e;
-            border-bottom-right-radius: 0;
-            font-weight: 500;
-        }
-
-        .bot {
-            align-self: flex-start;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #333;
-            border-bottom-left-radius: 0;
+        form { display: flex; padding: 20px 15%; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); align-items: center; gap: 10px; }
+        
+        input { flex: 1; padding: 15px; border-radius: 30px; border: none; outline: none; font-family: 'Poppins', sans-serif; font-size: 1rem; }
+        
+        .lang-select {
+            padding: 10px; border-radius: 20px; border: none; outline: none; 
+            font-family: 'Poppins', sans-serif; cursor: pointer;
+            background: rgba(255,255,255,0.9); color: #333;
+            max-width: 120px;
         }
 
-        form {
-            display: flex;
-            padding: 20px 15%;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+        .mic-btn {
+            width: 50px; height: 50px; border-radius: 50%; border: none;
+            background: rgba(255,255,255,0.2); color: white; font-size: 1.2rem;
+            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center;
         }
+        .mic-btn:hover { background: rgba(255,255,255,0.4); }
+        .mic-btn.recording { background: #ff5252; animation: pulse 1.5s infinite; }
 
-        input {
-            flex: 1;
-            padding: 15px;
-            border-radius: 30px;
-            border: none;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-        }
+        .send-btn { padding: 12px 30px; background-color: #4CAF50; border: none; color: white; border-radius: 30px; font-size: 1rem; cursor: pointer; transition: 0.3s; font-weight: 600; }
+        .send-btn:hover { background-color: #43a047; transform: scale(1.05); }
 
-        button[type="submit"] {
-            padding: 12px 30px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            margin-left: 15px;
-            border-radius: 30px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: 600;
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        button[type="submit"]:hover {
-            background-color: #43a047;
-            transform: scale(1.05);
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(8px); }
+        .close-btn { margin-top: 30px; background: transparent; border: 1px solid white; color: white; padding: 10px 30px; border-radius: 20px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .close-btn:hover { background: white; color: black; }
 
-        #breathing-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9); 
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            backdrop-filter: blur(8px);
-        }
-
-        .circle-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 300px;
-            width: 300px;
-        }
-
-        .circle {
-            background-color: #fff;
-            height: 100%;
-            width: 100%;
-            border-radius: 50%;
-            position: absolute;
-            opacity: 0.8;
-            box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
-            transform: scale(0.3);
-        }
-
-        #instruction {
-            font-size: 2rem;
-            color: white;
-            z-index: 10;
-            font-family: 'Poppins', sans-serif;
-            pointer-events: none;
-            font-weight: 300;
-        }
-
-        .close-btn {
-            margin-top: 50px;
-            background: transparent;
-            border: 1px solid white;
-            color: white;
-            padding: 10px 30px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: 0.2s;
-        }
-
-        .close-btn:hover {
-            background: white;
-            color: black;
-        }
-
-        .grow {
-            animation: grow 4s linear forwards;
-        }
-        .shrink {
-            animation: shrink 4s linear forwards;
-        }
-
-        @keyframes grow {
-            from { transform: scale(0.3); }
-            to { transform: scale(1); }
-        }
-
-        @keyframes shrink {
-            from { transform: scale(1); }
-            to { transform: scale(0.3); }
-        }
+        .zen-bg { background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); color: #e0e0e0; }
+        .zen-input-container { text-align: center; width: 400px; }
+        .zen-input { width: 100%; padding: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 10px; font-family: 'Poppins', sans-serif; margin-top: 20px; }
+        .story-container { width: 60%; min-height: 200px; text-align: center; font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.4rem; line-height: 1.8; color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); display: none; }
+        .paper-container { width: 300px; height: 400px; background: #f8f9fa; color: #333; padding: 20px; border-radius: 5px; position: relative; overflow: hidden; }
+        .paper-textarea { width: 100%; height: 80%; border: none; background: transparent; resize: none; font-family: 'Shadows Into Light', cursive; font-size: 1.5rem; outline: none; color: #333; }
+        .destroy-btn { width: 100%; padding: 10px; background: #ff5252; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .shred-strip { position: absolute; top: 0; width: 10%; height: 100%; background: #f8f9fa; border-right: 1px solid rgba(0,0,0,0.05); transition: 1s ease-in; }
+        .shred-content { position: absolute; top: 20px; left: 0; width: 300px; height: 380px; padding: 0 20px; font-family: 'Shadows Into Light', cursive; font-size: 1.5rem; color: #333; pointer-events: none; }
+        .timer-display { font-size: 6rem; font-weight: 600; color: white; text-shadow: 0 0 20px rgba(255, 193, 7, 0.6); }
+        .circle-container { height: 300px; width: 300px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .circle { background-color: #fff; height: 100%; width: 100%; border-radius: 50%; position: absolute; opacity: 0.8; transform: scale(0.3); }
+        .grow { animation: grow 4s linear forwards; } .shrink { animation: shrink 4s linear forwards; }
+        @keyframes grow { from { transform: scale(0.3); } to { transform: scale(1); } }
+        @keyframes shrink { from { transform: scale(1); } to { transform: scale(0.3); } }
 
         @media (max-width: 768px) {
-            .header, #chat-box, form {
-                padding-left: 20px;
-                padding-right: 20px;
-                margin-left: 0;
-                margin-right: 0;
-            }
-            h2 { font-size: 2rem; }
+            .header, #chat-box, form { padding: 15px 20px; margin: 0; }
+            .header-right { gap: 5px; }
+            .header-btn { padding: 8px; }
+            .header-btn span { display: block; } 
+            .header-btn-text { display: none; } 
+            .story-container { width: 90%; font-size: 1.1rem; }
+            .zen-input-container { width: 90%; }
+            form { flex-wrap: wrap; }
+            input { width: 100%; }
         }
     </style>
 </head>
@@ -228,105 +144,213 @@
 <body>
 
     <div class="header">
-        <h2>MindEase Chat</h2>
-        <button class="breathe-btn" onclick="openBreathing()">
-            <span>🌬️</span> Relax
-        </button>
+        <h2>MindEase</h2>
+        <div class="header-right">
+            <button class="header-btn zen-btn" onclick="openZen()">
+                <span>🌌</span> <span class="header-btn-text">ZenStory</span>
+            </button>
+            <button class="header-btn shred-btn" onclick="openShredder()">
+                <span>🗑️</span> <span class="header-btn-text">Shred</span>
+            </button>
+            <button class="header-btn focus-btn" onclick="openFocus()">
+                <span>⏱️</span> <span class="header-btn-text">Focus</span>
+            </button>
+            <button class="header-btn" onclick="openBreathing()">
+                <span>🌬️</span> <span class="header-btn-text">Relax</span>
+            </button>
+        </div>
     </div>
 
     <div id="chat-box">
-        <div class="bubble bot">Hello {{ username }}! I'm here for you. How are you feeling right now? 🌿</div>
+        <div class="bubble bot">Hello {{ username }}! I'm MindEase. I can listen and speak in many languages. Select one below! 🌿</div>
     </div>
 
     <form id="chat-form">
-        <input type="text" id="user-input" placeholder="Type your message..." required autocomplete="off"/>
-        <button type="submit">Send</button>
+        <!-- Updated Language Selector -->
+        <select id="language-select" class="lang-select">
+            <option value="en-US">English</option>
+            <option value="hi-IN">Hindi</option>
+            <option value="pa-IN">Punjabi</option>
+            <option value="bn-IN">Bengali</option>
+            <option value="te-IN">Telugu</option>
+            <option value="ta-IN">Tamil</option>
+            <option value="kn-IN">Kannada</option>
+            <option value="gu-IN">Gujarati</option>
+            <option value="mr-IN">Marathi</option>
+            <option value="es-ES">Spanish</option>
+            <option value="fr-FR">French</option>
+        </select>
+
+        <input type="text" id="user-input" placeholder="Type or speak..." autocomplete="off"/>
+        
+        <button type="button" id="mic-btn" class="mic-btn" onclick="toggleRecording()">
+            🎤
+        </button>
+
+        <button type="submit" class="send-btn">Send</button>
     </form>
 
-    <div id="breathing-modal">
-        <div class="circle-container">
-            <div class="circle" id="breathing-circle"></div>
-            <p id="instruction">Get Ready...</p>
-        </div>
-        <button class="close-btn" onclick="closeBreathing()">Stop Exercise</button>
-    </div>
+    <div id="zen-modal" class="modal-overlay zen-bg"><div id="zen-input-box" class="zen-input-container"><h2 style="font-weight: 300;">What is weighing on your mind?</h2><p>I will weave a calming story just for this.</p><input type="text" id="zen-topic" class="zen-input" placeholder="e.g., My physics exam..." autocomplete="off"><button class="header-btn zen-btn" style="width: 100%; margin-top: 15px; justify-content: center;" onclick="generateZenStory()">Weave Story ✨</button></div><div id="zen-loading" style="display:none; text-align: center;"><div style="font-size: 3rem; animation: spin 3s infinite linear;">✨</div><p>Consulting the stars...</p></div><div id="zen-story-display" class="story-container"></div><button class="close-btn" onclick="closeZen()">Return</button></div>
+    <div id="shredder-modal" class="modal-overlay"><div class="paper-container" id="paper"><textarea class="paper-textarea" id="worry-input" placeholder="Write your worry here..."></textarea><button class="destroy-btn" onclick="shredPaper()">DESTROY WORRY</button></div><div id="shred-message" style="display:none; text-align:center;"><h2>Gone. 🍃</h2><p>You've let it go.</p></div><button class="close-btn" onclick="closeShredder()">Close</button></div>
+    <div id="breathing-modal" class="modal-overlay"><div class="circle-container"><div class="circle" id="breathing-circle"></div><p id="instruction" style="font-size:2rem; z-index:10;">Get Ready...</p></div><button class="close-btn" onclick="closeBreathing()">Stop Exercise</button></div>
+    <div id="focus-modal" class="modal-overlay"><p style="font-size:1.5rem; margin-bottom:20px;">Focus Timer</p><div class="timer-display" id="timer">25:00</div><button class="close-btn" onclick="closeFocus()">End Session</button></div>
 
     <script>
         const chatBox = document.getElementById("chat-box");
+        
+        let voices = [];
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+        }
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
 
         function addMessage(text, sender) {
-            const div = document.createElement("div");
-            div.className = `bubble ${sender}`;
-            div.textContent = text;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            const div = document.createElement("div"); div.className = `bubble ${sender}`; div.textContent = text;
+            chatBox.appendChild(div); chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        
+        function speakText(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            const langCode = document.getElementById("language-select").value;
+            utterance.lang = langCode;
+
+            const exactMatch = voices.find(voice => voice.lang === langCode);
+            const partialMatch = voices.find(voice => voice.lang.startsWith(langCode.split('-')[0]));
+
+            if (exactMatch) {
+                utterance.voice = exactMatch;
+            } else if (partialMatch) {
+                utterance.voice = partialMatch;
+            }
+            
+            utterance.rate = 0.9; // Slightly slower for better clarity in regional languages
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        let mediaRecorder;
+        let audioChunks = [];
+        const micBtn = document.getElementById("mic-btn");
+        const userInput = document.getElementById("user-input");
+
+        async function toggleRecording() {
+            if (micBtn.classList.contains("recording")) {
+                mediaRecorder.stop();
+                micBtn.classList.remove("recording");
+            } else {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    alert("Your browser does not support audio recording.");
+                    return;
+                }
+
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const formData = new FormData();
+                        formData.append("file", audioBlob, "recording.webm");
+
+                        userInput.value = "🎤 Transcribing...";
+                        userInput.disabled = true;
+
+                        const res = await fetch("/transcribe", {
+                            method: "POST",
+                            body: formData
+                        });
+                        const data = await res.json();
+                        
+                        userInput.disabled = false;
+                        userInput.value = data.text || "";
+                        
+                        if (data.text) {
+                            document.getElementById("chat-form").dispatchEvent(new Event('submit'));
+                        } else {
+                            userInput.placeholder = "Could not hear you. Try again.";
+                        }
+                    };
+
+                    mediaRecorder.start();
+                    micBtn.classList.add("recording");
+
+                } catch (err) {
+                    console.error("Error accessing microphone:", err);
+                    alert("Microphone access denied. Check browser permissions.");
+                }
+            }
         }
 
         document.getElementById("chat-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             const input = document.getElementById("user-input");
-            const message = input.value.trim();
-            if (!message) return;
-
-            addMessage(message, "user");
-            input.value = "";
-
-            const loadingDiv = document.createElement("div");
-            loadingDiv.className = "bubble bot";
-            loadingDiv.textContent = "...";
-            loadingDiv.id = "loading-bubble";
-            chatBox.appendChild(loadingDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-
+            const message = input.value.trim(); if (!message) return;
+            addMessage(message, "user"); input.value = "";
+            const loadingDiv = document.createElement("div"); loadingDiv.className = "bubble bot"; loadingDiv.textContent = "..."; loadingDiv.id = "loading-bubble";
+            chatBox.appendChild(loadingDiv); chatBox.scrollTop = chatBox.scrollHeight;
             try {
-                const res = await fetch("/chat/message", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message })
-                });
-
+                const res = await fetch("/chat/message", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message }) });
                 const data = await res.json();
-                
-                document.getElementById("loading-bubble").remove();
+                document.getElementById("loading-bubble").remove(); 
                 addMessage(data.reply, "bot");
-
+                speakText(data.reply);
             } catch (error) {
-                if(document.getElementById("loading-bubble")) {
-                    document.getElementById("loading-bubble").remove();
-                }
-                addMessage("I'm having trouble connecting. Please check your internet.", "bot");
+                if(document.getElementById("loading-bubble")) document.getElementById("loading-bubble").remove();
+                addMessage("Connection error.", "bot");
             }
         });
 
-        const modal = document.getElementById("breathing-modal");
-        const circle = document.getElementById("breathing-circle");
-        const instruction = document.getElementById("instruction");
-        let breathingInterval;
-
-        function openBreathing() {
-            modal.style.display = "flex"; 
-            instruction.innerText = "Inhale...";
-            circle.className = 'circle grow'; 
-            
-            breatheCycle();
-            breathingInterval = setInterval(breatheCycle, 8000);
+        function closeAllModals() {
+            document.getElementById("breathing-modal").style.display = "none";
+            document.getElementById("focus-modal").style.display = "none";
+            document.getElementById("shredder-modal").style.display = "none";
+            document.getElementById("zen-modal").style.display = "none";
         }
 
-        function closeBreathing() {
-            modal.style.display = "none"; 
-            clearInterval(breathingInterval);
-            circle.className = 'circle';
+        function openZen() { closeAllModals(); document.getElementById("zen-modal").style.display = "flex"; document.getElementById("zen-input-box").style.display = "block"; document.getElementById("zen-story-display").style.display = "none"; document.getElementById("zen-story-display").innerText = ""; }
+        function closeZen() { closeAllModals(); }
+        async function generateZenStory() {
+            const topic = document.getElementById("zen-topic").value; if(!topic) return;
+            document.getElementById("zen-input-box").style.display = "none";
+            document.getElementById("zen-loading").style.display = "block";
+            try {
+                const res = await fetch("/zen_mode", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ worry: topic }) });
+                const data = await res.json();
+                document.getElementById("zen-loading").style.display = "none";
+                const storyDiv = document.getElementById("zen-story-display");
+                storyDiv.style.display = "block";
+                let i = 0; const txt = data.story; const speed = 40;
+                function typeWriter() { if (i < txt.length) { storyDiv.innerHTML += txt.charAt(i); i++; setTimeout(typeWriter, speed); } }
+                typeWriter();
+            } catch(e) { alert("Star connection failed."); closeZen(); }
         }
-
-        function breatheCycle() {
-            instruction.innerText = "Inhale...";
-            circle.className = 'circle grow';
-
-            setTimeout(() => {
-                instruction.innerText = "Exhale...";
-                circle.className = 'circle shrink';
-            }, 4000);
+        function openShredder() { closeAllModals(); document.getElementById("shredder-modal").style.display = "flex"; document.getElementById("paper").style.display = "block"; document.getElementById("paper").innerHTML = `<textarea class="paper-textarea" id="worry-input" placeholder="Write your worry here..."></textarea><button class="destroy-btn" onclick="shredPaper()">DESTROY WORRY</button>`; document.getElementById("shred-message").style.display = "none"; }
+        function closeShredder() { closeAllModals(); }
+        function shredPaper() {
+            const paper = document.getElementById("paper"); const text = document.getElementById("worry-input").value; if(!text) return;
+            paper.innerHTML = ""; paper.style.background = "transparent"; paper.style.boxShadow = "none";
+            const stripCount = 10; const stripWidth = 100 / stripCount;
+            for(let i=0; i<stripCount; i++) {
+                const strip = document.createElement("div"); strip.className = "shred-strip"; strip.style.left = (i * stripWidth) + "%"; strip.style.width = stripWidth + "%";
+                const content = document.createElement("div"); content.className = "shred-content"; content.innerText = text; content.style.left = -(i * 30) + "px";
+                strip.appendChild(content); paper.appendChild(strip);
+                setTimeout(() => { strip.style.transform = `translateY(${400 + Math.random() * 200}px) rotate(${Math.random() * 20 - 10}deg)`; strip.style.opacity = "0"; }, i * 50);
+            }
+            setTimeout(() => { document.getElementById("paper").style.display = "none"; document.getElementById("shred-message").style.display = "block"; }, 1500);
         }
+        let timerInterval, timeLeft;
+        function openFocus() { closeAllModals(); document.getElementById("focus-modal").style.display = "flex"; timeLeft = 25*60; document.getElementById("timer").innerText = "25:00"; timerInterval = setInterval(() => { if(timeLeft<=0) { clearInterval(timerInterval); document.getElementById("timer").innerText = "Done!"; return; } timeLeft--; let m = Math.floor(timeLeft/60); let s = timeLeft%60; document.getElementById("timer").innerText = `${m}:${s<10?'0':''}${s}`; }, 1000); }
+        function closeFocus() { closeAllModals(); clearInterval(timerInterval); }
+        let breathInterval;
+        function openBreathing() { closeAllModals(); document.getElementById("breathing-modal").style.display = "flex"; const c = document.getElementById("breathing-circle"); const i = document.getElementById("instruction"); i.innerText = "Inhale..."; c.className = 'circle grow'; const cycle = () => { i.innerText = "Inhale..."; c.className = 'circle grow'; setTimeout(() => { i.innerText = "Exhale..."; c.className = 'circle shrink'; }, 4000); }; cycle(); breathInterval = setInterval(cycle, 8000); }
+        function closeBreathing() { closeAllModals(); clearInterval(breathInterval); }
     </script>
 
 </body>

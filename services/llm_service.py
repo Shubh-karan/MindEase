@@ -21,17 +21,18 @@ Guidelines:
 4. BREATHING TOOL: If the user seems anxious, panicked, or stressed, explicitly say: "Try clicking the 'Relax' button 🌬️ at the top of our chat. It will guide you through a calming breathing exercise."
 5. Techniques: Suggest specific things like "5-4-3-2-1 Grounding" or "Pomodoro technique" when relevant.
 6. Context: You are talking to a student. They often face exam stress, loneliness, and sleep issues.
+7. LANGUAGE SUPPORT: You are a multilingual assistant.
+    - Detect the language of the user's message.
+    - If they speak in Punjabi, reply in Punjabi (Gurmukhi script).
+    - If they speak in Tamil, reply in Tamil script.
+    - If they speak in Kannada, reply in Kannada script.
+    - Generally, reply in the exact same language and script the user used.
 """
 
 def get_llm_response(user_message, chat_history):
-    """
-    Sends the message + conversation history to Llama 3.
-    """
     try:
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-        
         messages.extend(chat_history)
-        
         messages.append({"role": "user", "content": user_message})
 
         chat_completion = client.chat.completions.create(
@@ -40,17 +41,12 @@ def get_llm_response(user_message, chat_history):
             temperature=0.7,        
             max_tokens=300,         
         )
-
         return chat_completion.choices[0].message.content
-
     except Exception as e:
         print(f"Error calling Groq API: {e}")
         return "I'm having a little trouble connecting to my thoughts right now. Could you try saying that again? 🌿"
 
 def generate_zen_story(user_worry):
-    """
-    Generates a short, calming visualization script based on the specific worry.
-    """
     zen_prompt = f"""
     You are a guided meditation expert. The user is stressed about: "{user_worry}".
     Write a SHORT (approx 100 words), soothing, second-person visualization script ("Imagine you are...") to help them relax about this specific topic.
@@ -58,7 +54,6 @@ def generate_zen_story(user_worry):
     - Tone: Gentle, slow, hypnotic.
     - Do NOT give advice. Just paint a calming picture.
     """
-    
     try:
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": zen_prompt}],
@@ -70,3 +65,15 @@ def generate_zen_story(user_worry):
     except Exception as e:
         print(f"Error generating Zen Story: {e}")
         return "Imagine a calm blue ocean. The waves are gently rolling in and out. Breathe with the waves..."
+
+def transcribe_audio(audio_file):
+    try:
+        transcription = client.audio.transcriptions.create(
+            file=(audio_file.filename, audio_file.read()),
+            model="whisper-large-v3",
+            response_format="text",
+        )
+        return transcription
+    except Exception as e:
+        print(f"Error transcribing audio: {e}")
+        return ""

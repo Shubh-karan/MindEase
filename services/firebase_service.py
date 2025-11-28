@@ -121,3 +121,38 @@ def get_sentiment_stats():
     except Exception as e:
         print(f"Error fetching stats: {e}")
         return {'Positive': 0, 'Negative': 0, 'Neutral': 0}
+    
+from datetime import datetime
+
+# ... (Existing code) ...
+
+# --- NEW REPORT FUNCTION ---
+def get_logs_by_date_range(start_date_str, end_date_str):
+    """
+    Fetches chat logs between two dates.
+    Dates must be strings in 'YYYY-MM-DD' format.
+    """
+    try:
+        # Convert strings to datetime objects
+        start = datetime.strptime(start_date_str, "%Y-%m-%d")
+        # For end date, we set time to 23:59:59 to include the whole day
+        end = datetime.strptime(end_date_str, "%Y-%m-%d").replace(hour=23, minute=59, second=59)
+
+        # Query Firestore
+        logs_ref = db.collection('chat_logs')
+        query = logs_ref.where('timestamp', '>=', start).where('timestamp', '<=', end).stream()
+
+        report_data = []
+        for doc in query:
+            data = doc.to_dict()
+            # Format the timestamp for the report
+            if 'timestamp' in data and data['timestamp']:
+                data['date'] = data['timestamp'].strftime("%Y-%m-%d %H:%M")
+            else:
+                data['date'] = "Unknown"
+            report_data.append(data)
+            
+        return report_data
+    except Exception as e:
+        print(f"Error fetching report data: {e}")
+        return []

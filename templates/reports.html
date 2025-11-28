@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindEase - Generate Reports</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: "Caveat", cursive;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,212,255,0.4); }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+        }
+        .back-link:hover { color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container">
+        <h1>Generate Report 📄</h1>
+        <p>Select a timeline to analyze student sentiment.</p>
+
+        <form action="/admin/download_report" method="POST">
+            <label>Start Date:</label>
+            <input type="date" name="start_date" required>
+
+            <label>End Date:</label>
+            <input type="date" name="end_date" required>
+
+            <label>Format:</label>
+            <select name="format">
+                <option value="csv">CSV (Excel)</option>
+                <option value="pdf">PDF Document</option>
+            </select>
+
+            <button type="submit">Download Report 📥</button>
+        </form>
+
+        <a href="/admin" class="back-link">← Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

@@ -1,7 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response
 from flask_cors import CORS
 from textblob import TextBlob
 import os
+import csv
+import io
+from fpdf import FPDF
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from services.firebase_service import (
     create_user, 
@@ -9,13 +15,21 @@ from services.firebase_service import (
     get_user, 
     get_all_users, 
     save_chat_log, 
-    get_sentiment_stats
+    get_sentiment_stats,
+    get_logs_by_date_range
 )
-from services.llm_service import get_llm_response, generate_zen_story
+from services.llm_service import get_llm_response, generate_zen_story, transcribe_audio
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "Everthing is okay")
 CORS(app)
+
+def clean_text(text):
+    if not text: return ""
+    try:
+        return text.encode('latin-1', 'ignore').decode('latin-1')
+    except:
+        return ""
 
 @app.route('/')
 def home():
@@ -24,7 +38,7 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email').lower()
         password = request.form.get('password')
         
         user = verify_user(email, password)
@@ -47,7 +61,7 @@ def login():
 @app.route('/google_login', methods=['POST'])
 def google_login():
     data = request.get_json()
-    email = data.get('email')
+    email = data.get('email').lower()
     name = data.get('name')
     
     create_user(name, email, "google_auth_user")
@@ -73,7 +87,7 @@ def google_login():
 def register():
     if request.method == 'POST':
         name = request.form.get('name')
-        email = request.form.get('email')
+        email = request.form.get('email').lower()
         password = request.form.get('password')
         
         success = create_user(name, email, password)
@@ -88,7 +102,7 @@ def register():
 @app.route('/chat')
 def chat():
     if 'user_email' not in session:
-        return redirect (url_for('login'))
+        return redirect(url_for('login'))
     return render_template('chat.html', username=session.get('user_name'))
 
 @app.route('/chat/message', methods=['POST'])
@@ -120,6 +134,18 @@ def chat_message():
     
     return jsonify({'reply': bot_reply})
 
+@app.route('/transcribe', methods=['POST'])
+def transcribe():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    text = transcribe_audio(file)
+    return jsonify({'text': text})
+
 @app.route('/zen_mode', methods=['POST'])
 def zen_mode():
     data = request.get_json()
@@ -141,10 +167,75 @@ def admin_dashboard():
     
     return render_template('admin.html', users=all_users, count=total_users, mood_data=mood_stats)
 
+@app.route('/admin/reports')
+def admin_reports():
+    if 'user_email' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        return redirect(url_for('chat'))
+        
+    return render_template('reports.html')
+
+@app.route('/admin/download_report', methods=['POST'])
+def download_report():
+    if session.get('role') != 'admin':
+        return "Access Denied"
+
+    start_date = request.form.get('start_date')
+    end_date = request.form.get('end_date')
+    file_format = request.form.get('format')
+
+    logs = get_logs_by_date_range(start_date, end_date)
+
+    if file_format == 'csv':
+        si = io.StringIO()
+        cw = csv.writer(si)
+        cw.writerow(['Date', 'Email', 'Message', 'Sentiment'])
+        for log in logs:
+            cw.writerow([log.get('date', 'N/A'), log.get('email', 'Anon'), log.get('message', ''), log.get('sentiment', '')])
+        
+        output = make_response(si.getvalue())
+        output.headers["Content-Disposition"] = f"attachment; filename=report_{start_date}_to_{end_date}.csv"
+        output.headers["Content-type"] = "text/csv"
+        return output
+
+    elif file_format == 'pdf':
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        
+        pdf.cell(200, 10, txt=f"MindEase Report: {start_date} to {end_date}", ln=1, align='C')
+        pdf.ln(10)
+        
+        pdf.set_font("Arial", 'B', 10)
+        pdf.cell(40, 10, "Date", 1)
+        pdf.cell(30, 10, "Sentiment", 1)
+        pdf.cell(120, 10, "Message (Preview)", 1)
+        pdf.ln()
+        
+        pdf.set_font("Arial", size=9)
+        for log in logs:
+            msg_raw = log.get('message', '')
+            msg_clean = clean_text(msg_raw)
+            
+            msg_preview = (msg_clean[:60] + '...') if len(msg_clean) > 60 else msg_clean
+            
+            pdf.cell(40, 10, str(log.get('date', 'N/A')), 1)
+            pdf.cell(30, 10, clean_text(str(log.get('sentiment', 'N/A'))), 1)
+            pdf.cell(120, 10, msg_preview, 1)
+            pdf.ln()
+
+        response = make_response(pdf.output(dest='S').encode('latin-1'))
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename=report_{start_date}.pdf'
+        return response
+
+    return "Invalid Format Selected"
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

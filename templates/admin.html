@@ -83,7 +83,6 @@
             padding: 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             overflow-x: auto;
-            /* For mobile scrolling */
         }
 
         table {
@@ -108,21 +107,39 @@
             border-bottom: none;
         }
 
-        .btn-logout {
+        .admin-actions {
+            display: flex;
+            gap: 20px;
             margin-top: 30px;
+        }
+
+        .btn {
             padding: 12px 30px;
-            background-color: #ff6b6b;
             color: white;
             text-decoration: none;
             border-radius: 30px;
             font-weight: bold;
             transition: transform 0.2s, background 0.2s;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .btn-logout:hover {
+        .btn-report {
+            background-color: #00d2ff;
+        }
+        .btn-report:hover {
+            background-color: #00b4d8;
             transform: scale(1.05);
+        }
+
+        .btn-logout {
+            background-color: #ff6b6b;
+        }
+        .btn-logout:hover {
             background-color: #ff5252;
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -163,11 +180,9 @@
                     <td>{{ user.email }}</td>
                     <td>
                         {% if user.role == 'admin' %}
-                        <span
-                            style="background: #4CAF50; padding: 4px 10px; border-radius: 10px; font-size: 0.8rem;">Admin</span>
+                        <span style="background: #4CAF50; padding: 4px 10px; border-radius: 10px; font-size: 0.8rem;">Admin</span>
                         {% else %}
-                        <span
-                            style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 10px; font-size: 0.8rem;">User</span>
+                        <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 10px; font-size: 0.8rem;">User</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -176,7 +191,10 @@
         </table>
     </div>
 
-    <a href="/logout" class="btn-logout">Logout</a>
+    <div class="admin-actions">
+        <a href="/admin/reports" class="btn btn-report">📄 Generate Reports</a>
+        <a href="/logout" class="btn btn-logout">Logout</a>
+    </div>
 
     <script>
         const sentimentData = {{ mood_data | tojson }};
