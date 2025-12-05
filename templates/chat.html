@@ -16,30 +16,40 @@
         @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap');
 
+        :root {
+            --bg-gradient: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+            --header-bg: rgba(255, 255, 255, 0.1);
+            --chat-bg: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(0, 0, 0, 0.2);
+            --text-color: white;
+            --bot-bubble-bg: rgba(255, 255, 255, 0.95);
+            --bot-text: #333;
+            --modal-bg: #1a1a2e;
+            --card-border: rgba(255,255,255,0.1);
+        }
+
+        body.dark-mode {
+            --bg-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            --header-bg: rgba(20, 20, 20, 0.8);
+            --chat-bg: rgba(20, 20, 20, 0.4);
+            --input-bg: rgba(0, 0, 0, 0.6);
+            --text-color: #e0e0e0;
+            --bot-bubble-bg: rgba(40, 40, 40, 0.95);
+            --bot-text: #eee;
+            --modal-bg: #0f0f1a;
+            --card-border: rgba(255,255,255,0.05);
+        }
+
         body {
             margin: 0;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+            background: var(--bg-gradient);
             font-family: 'Poppins', sans-serif;
-            color: white;
+            color: var(--text-color);
             overflow: hidden;
             transition: background 0.5s ease;
-        }
-
-        body.dark-mode {
-            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-        }
-        body.dark-mode .header, 
-        body.dark-mode #chat-box, 
-        body.dark-mode form {
-            background: rgba(20, 20, 20, 0.6);
-            border-color: rgba(255,255,255,0.05);
-        }
-        body.dark-mode .bubble.bot {
-            background: rgba(40, 40, 40, 0.95);
-            color: #eee;
         }
 
         .header {
@@ -47,11 +57,11 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--header-bg);
             backdrop-filter: blur(10px);
             z-index: 10;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            transition: background 0.3s;
+            transition: 0.3s;
         }
         .header h2 { font-family: "Caveat", cursive; margin: 0; font-size: 2.2rem; }
         .header-right { display: flex; gap: 12px; align-items: center; }
@@ -73,18 +83,34 @@
         }
         .header-btn:hover { background: rgba(255, 255, 255, 0.3); transform: translateY(-2px); }
         
-        .emergency-btn { background: rgba(255, 82, 82, 0.2); border-color: rgba(255, 82, 82, 0.5); color: #ffcbcb; font-weight: 600; }
-        .emergency-btn:hover { background: rgba(255, 82, 82, 0.4); }
-
         .gift-btn { background: rgba(255, 215, 0, 0.2); border-color: rgba(255, 215, 0, 0.5); color: #fff; animation: floatGift 3s infinite ease-in-out; }
         .gift-btn:hover { background: rgba(255, 215, 0, 0.4); }
         @keyframes floatGift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+        .emergency-btn { background: rgba(255, 82, 82, 0.2); border-color: rgba(255, 82, 82, 0.5); color: #ffcbcb; font-weight: 600; }
+        .emergency-btn:hover { background: rgba(255, 82, 82, 0.4); }
         
         .logout-icon { 
-            text-decoration: none; color: white; padding: 10px; background: rgba(255, 82, 82, 0.15); border: 1px solid rgba(255, 82, 82, 0.3); border-radius: 12px; 
-            transition: 0.2s; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px;
+            text-decoration: none; 
+            color: rgba(255,255,255,0.8);
+            padding: 8px; 
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            width: 40px;
+            height: 40px;
         }
-        .logout-icon:hover { background: rgba(255, 82, 82, 0.4); border-color: rgba(255, 82, 82, 0.6); transform: scale(1.05); }
+        .logout-icon:hover { 
+            background: rgba(255, 82, 82, 0.2); 
+            border-color: #ff5252;
+            color: #ff5252;
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 0 15px rgba(255, 82, 82, 0.3);
+        }
 
         #chat-box {
             flex-grow: 1;
@@ -93,7 +119,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--chat-bg);
             margin: 0;
             backdrop-filter: blur(5px);
             scrollbar-width: thin; 
@@ -110,9 +136,9 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .user { align-self: flex-end; background-color: #00d2ff; color: #00334e; border-bottom-right-radius: 2px; font-weight: 500; }
-        .bot { align-self: flex-start; background-color: rgba(255, 255, 255, 0.95); color: #333; border-bottom-left-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .bot { align-self: flex-start; background-color: var(--bot-bubble-bg); color: var(--bot-text); border-bottom-left-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
-        form { display: flex; padding: 20px; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); align-items: center; gap: 10px; transition: background 0.3s; }
+        form { display: flex; padding: 20px; background: var(--input-bg); backdrop-filter: blur(10px); align-items: center; gap: 10px; transition: 0.3s; }
         input { flex: 1; padding: 15px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; outline: none; font-family: 'Poppins', sans-serif; font-size: 1rem; transition: 0.3s; }
         input:focus { background: rgba(255,255,255,0.2); border-color: #00d2ff; }
         
@@ -125,21 +151,22 @@
         .send-btn:hover { transform: scale(1.05); }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); z-index: 2000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(8px); animation: fadeModal 0.2s ease-out; }
+        .modal-overlay, .gm-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); z-index: 2000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(8px); animation: fadeModal 0.2s ease-out; }
         @keyframes fadeModal { from { opacity: 0; } to { opacity: 1; } }
+        
+        .gm-card { width:90%; max-width:800px; background: var(--modal-bg); border: 1px solid var(--card-border); border-radius:20px; padding:30px; color:#eef6ff; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
+        
         .close-btn { margin-top: 20px; background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 8px 25px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
         .close-btn:hover { background: white; color: black; }
         .icon-close-btn { background: transparent; border: none; color: rgba(255, 255, 255, 0.6); font-size: 1.5rem; cursor: pointer; padding: 5px; line-height: 1; transition: 0.2s; }
         .icon-close-btn:hover { color: white; transform: scale(1.1); }
 
-        .gm-card { width:90%; max-width:800px; background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); border-radius:20px; padding:30px; color:#eef6ff; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; }
         .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; margin-top: 20px; }
         .tool-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; color: white; font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
         .tool-card:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .tool-card span { font-size: 2.5rem; }
         .tool-card h4 { margin: 0; font-weight: 500; font-size: 1rem; }
-        
-        .gm-modal { display: none; position: fixed; inset: 0; background: rgba(2,6,23,0.9); z-index:2100; align-items: center; justify-content:center; padding:20px; }
+
         .gm-header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
         .gm-tabs { display:flex; gap:10px; margin-bottom:20px; }
         .gm-tab { padding:8px 16px; border-radius:20px; background: rgba(255,255,255,0.05); cursor:pointer; font-size: 0.9rem; transition: 0.2s; }
@@ -159,6 +186,24 @@
         .mem-front { background: linear-gradient(45deg, #3a7bd5, #00d2ff); }
         .mem-back { background: white; color: #333; transform: rotateY(180deg); }
 
+        .zen-bg { background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); color: #e0e0e0; }
+        .zen-input-container { text-align: center; width: 500px; max-width: 90%; }
+        .zen-input { width: 100%; padding: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 10px; font-family: 'Poppins', sans-serif; margin-top: 20px; font-size: 1.1rem; }
+        .story-container { width: 70%; min-height: 200px; text-align: center; font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.5rem; line-height: 1.8; color: #ffd700; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); display: none; margin-top: 30px; }
+        
+        .paper-container { width: 300px; height: 400px; background: #f8f9fa; color: #333; padding: 25px; border-radius: 5px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: rotate(-2deg); }
+        .paper-textarea { width: 100%; height: 80%; border: none; background: transparent; resize: none; font-family: 'Shadows Into Light', cursive; font-size: 1.6rem; outline: none; color: #333; line-height: 1.5; }
+        .destroy-btn { width: 100%; padding: 12px; background: #ff5252; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px; font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: 1px; }
+        .shred-strip { position: absolute; top: 0; width: 10%; height: 100%; background: #f8f9fa; border-right: 1px solid rgba(0,0,0,0.05); transition: 1s ease-in; }
+        .shred-content { position: absolute; top: 25px; left: 0; width: 300px; padding: 0 25px; font-family: 'Shadows Into Light', cursive; font-size: 1.6rem; color: #333; pointer-events: none; }
+        
+        .timer-display { font-size: 7rem; font-weight: 600; color: white; text-shadow: 0 0 30px rgba(255, 193, 7, 0.5); margin: 20px 0; }
+        .circle-container { height: 300px; width: 300px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .circle { background-color: #fff; height: 100%; width: 100%; border-radius: 50%; position: absolute; opacity: 0.8; transform: scale(0.3); box-shadow: 0 0 60px rgba(255,255,255,0.4); }
+        .grow { animation: grow 4s linear forwards; } .shrink { animation: shrink 4s linear forwards; }
+        @keyframes grow { from { transform: scale(0.3); } to { transform: scale(1); } }
+        @keyframes shrink { from { transform: scale(1); } to { transform: scale(0.3); } }
+        
         .emergency-box { background: #fff; color: #333; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
         .em-btn { width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 12px; font-size: 1rem; cursor: pointer; font-weight: 600; transition: 0.2s; text-align: left; padding-left: 20px; display: flex; align-items: center; gap: 10px; }
         .em-loc { background: #e3f2fd; color: #1565c0; }
@@ -166,28 +211,13 @@
         .em-help { background: #fff3e0; color: #ef6c00; }
         .em-close { background: #f5f5f5; color: #333; justify-content: center; margin-top: 20px; }
 
-        .zen-bg { background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); color: #e0e0e0; }
-        .zen-input-container { text-align: center; width: 500px; max-width: 90%; }
-        .zen-input { width: 100%; padding: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 10px; font-family: 'Poppins', sans-serif; margin-top: 20px; font-size: 1.1rem; }
-        .story-container { width: 70%; min-height: 200px; text-align: center; font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.5rem; line-height: 1.8; color: #ffd700; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); display: none; margin-top: 30px; }
-        .paper-container { width: 300px; height: 400px; background: #f8f9fa; color: #333; padding: 25px; border-radius: 5px; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: rotate(-2deg); }
-        .paper-textarea { width: 100%; height: 80%; border: none; background: transparent; resize: none; font-family: 'Shadows Into Light', cursive; font-size: 1.6rem; outline: none; color: #333; line-height: 1.5; }
-        .destroy-btn { width: 100%; padding: 12px; background: #ff5252; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px; font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: 1px; }
-        .shred-strip { position: absolute; top: 0; width: 10%; height: 100%; background: #f8f9fa; border-right: 1px solid rgba(0,0,0,0.05); transition: 1s ease-in; }
-        .shred-content { position: absolute; top: 25px; left: 0; width: 300px; padding: 0 25px; font-family: 'Shadows Into Light', cursive; font-size: 1.6rem; color: #333; pointer-events: none; }
-        .timer-display { font-size: 7rem; font-weight: 600; color: white; text-shadow: 0 0 30px rgba(255, 193, 7, 0.5); margin: 20px 0; }
-        .circle-container { height: 300px; width: 300px; display: flex; justify-content: center; align-items: center; position: relative; }
-        .circle { background-color: #fff; height: 100%; width: 100%; border-radius: 50%; position: absolute; opacity: 0.8; transform: scale(0.3); box-shadow: 0 0 60px rgba(255,255,255,0.4); }
-        .grow { animation: grow 4s linear forwards; } .shrink { animation: shrink 4s linear forwards; }
-        @keyframes grow { from { transform: scale(0.3); } to { transform: scale(1); } }
-        @keyframes shrink { from { transform: scale(1); } to { transform: scale(0.3); } }
-        #gm-confetti { position: fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:3000; display:none; }
-        
         #calendar-modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); z-index: 2200; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .calendar-card { width: 90%; max-width: 900px; height: 85vh; background: #fff; border-radius: 20px; padding: 25px; display: flex; flex-direction: column; color: #333; }
         #calendar { flex-grow: 1; margin-top: 15px; font-family: 'Poppins', sans-serif; }
         .fc-toolbar-title { font-size: 1.5rem !important; font-weight: 600; }
         .fc-button { background-color: #00d2ff !important; border: none !important; font-weight: 500 !important; text-transform: capitalize !important; }
+
+        #gm-confetti { position: fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:3000; display:none; }
 
         @media (max-width: 768px) {
             .header { padding: 15px; }
@@ -219,8 +249,8 @@
             <button class="header-btn" onclick="openTools()" data-intro="Access ZenStory, Shredder, Focus Timer, and Games here!">
                 <span>🛠️</span> <span class="header-btn-text">Toolkit</span>
             </button>
-            <a href="/logout" class="logout-icon" title="Logout">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+            <a href="#" onclick="promptFeedback(event)" class="logout-icon" title="Logout">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
             </a>
         </div>
     </div>
@@ -298,31 +328,56 @@
         <div class="emergency-box">
             <h3 style="margin-top:0;">Emergency Contacts</h3>
             <p style="font-size:0.9rem; margin-bottom:15px;">Add trusted contacts for quick access.</p>
-            
             <input type="text" id="contact-name" class="zen-input" placeholder="Name" style="color:#333; background:#f5f5f5; border:1px solid #ddd; margin-top:0; margin-bottom:10px;">
             <input type="tel" id="contact-number" class="zen-input" placeholder="Phone Number" style="color:#333; background:#f5f5f5; border:1px solid #ddd; margin-top:0; margin-bottom:15px;">
-            
             <button class="em-btn em-loc" onclick="saveContact()" style="justify-content:center;">Save Contact</button>
-            
             <div id="saved-contacts" style="text-align:left; margin-top:20px; max-height: 150px; overflow-y:auto;"></div>
-            
             <button class="em-btn em-close" onclick="closeContacts()">Back</button>
         </div>
     </div>
 
-    <div id="gm-modal" class="gm-modal"><div class="gm-card"><div class="gm-header"><h3>Stress Relief Games</h3><button class="icon-close-btn" onclick="closeGames()">✕</button></div><div class="gm-tabs"><div class="gm-tab active" data-tab="tab-bubbles" onclick="switchTab(event)">Pop Bubbles</div><div class="gm-tab" data-tab="tab-color" onclick="switchTab(event)">Color Match</div><div class="gm-tab" data-tab="tab-memory" onclick="switchTab(event)">Memory Pairs</div></div><div class="gm-grid"><div class="gm-left"><div id="tab-bubbles" class="gm-panel"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><div>Score: <span id="sb_score">0</span></div><div>Time: <span id="sb_time">30</span>s</div><button class="header-btn" onclick="sb_start()">Start</button></div><div id="gm-playfield" class="gm-playfield"></div></div><div id="tab-color" class="gm-panel" style="display:none;"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><div>Score: <span id="cm_score">0</span></div><div>Time: <span id="cm_time">30</span>s</div><button class="header-btn" onclick="cm_start()">Start</button></div><div style="margin-bottom:10px;">Target: <span id="cm_target" style="display:inline-block; width:30px; height:20px; border-radius:4px; vertical-align:middle;"></span></div><div id="cm_grid" class="cm-grid"></div></div><div id="tab-memory" class="gm-panel" style="display:none;"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><div>Moves: <span id="mem_moves">0</span></div><button class="header-btn" onclick="mem_start()">Start</button></div><div id="mem_grid" class="mem-grid"></div></div></div><div class="gm-right"><h4>High Scores</h4><p>Bubbles: <span id="hs_bubbles">0</span></p><p>Color Match: <span id="hs_color">0</span></p><p>Memory: <span id="hs_mem">--</span></p></div></div></div></div>
+    <div id="feedback-modal" class="modal-overlay">
+        <div class="gm-card" style="max-width: 400px; text-align: center; background: #fff; color: #333;">
+            <div class="gm-header" style="border-bottom: 1px solid #eee; margin-bottom: 20px;">
+                <h3 style="margin:0; color:#333;">👋 Before you go...</h3>
+                <button class="icon-close-btn" onclick="continueLogout()" style="color:#333;">✕</button>
+            </div>
+            <p style="font-size:1rem; margin-bottom: 15px;">How was your MindEase experience today?</p>
+            <textarea id="feedback-input" style="width: 90%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; resize: none; font-family: 'Poppins', sans-serif;" placeholder="Your feedback helps us improve!"></textarea>
+            <button class="em-btn em-call" onclick="submitFeedbackAndLogout()" style="background:#00d2ff; color:white; justify-content:center; width:90%; margin-bottom: 10px;">Submit & Logout</button>
+            <button class="em-btn em-close" onclick="continueLogout()" style="justify-content:center; width:90%; background:#f5f5f5;">Skip & Logout</button>
+        </div>
+    </div>
+
+    <div id="gm-modal" class="gm-modal"><div class="gm-card"><div class="gm-header"><h3>Stress Relief Games</h3><button class="icon-close-btn" onclick="closeGames()">✕</button></div><div class="gm-tabs"><div class="gm-tab active" data-tab="tab-bubbles" onclick="switchTab(event)">Pop Bubbles</div><div class="gm-tab" data-tab="tab-color" onclick="switchTab(event)">Color Match</div><div class="gm-tab" data-tab="tab-memory" onclick="switchTab(event)">Memory Pairs</div></div><div class="gm-grid"><div class="gm-left"><div id="tab-bubbles" class="gm-panel"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><div>Score: <span id="sb_score">0</span></div><div>Time: <span id="sb_time">30</span>s</div><div><button class="header-btn" onclick="sb_stop()">Stop</button><button class="header-btn" onclick="sb_reset()">Reset</button><button class="header-btn" onclick="sb_start()">Start</button></div></div><div id="gm-playfield" class="gm-playfield"></div></div><div id="tab-color" class="gm-panel" style="display:none;"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><div>Score: <span id="cm_score">0</span></div><div>Time: <span id="cm_time">30</span>s</div><div><button class="header-btn" onclick="cm_stop()">Stop</button><button class="header-btn" onclick="cm_reset()">Reset</button><button class="header-btn" onclick="cm_start()">Start</button></div></div><div style="margin-bottom:10px;">Target: <span id="cm_target" style="display:inline-block; width:30px; height:20px; border-radius:4px; vertical-align:middle;"></span></div><div id="cm_grid" class="cm-grid"></div></div><div id="tab-memory" class="gm-panel" style="display:none;"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><div>Moves: <span id="mem_moves">0</span></div><div><button class="header-btn" onclick="mem_reset()">Reset</button><button class="header-btn" onclick="mem_start()">Start</button></div></div><div id="mem_grid" class="mem-grid"></div></div></div><div class="gm-right"><h4>High Scores</h4><p>Bubbles: <span id="hs_bubbles">0</span></p><p>Color Match: <span id="hs_color">0</span></p><p>Memory: <span id="hs_mem">--</span></p></div></div></div></div>
     
     <div id="calendar-modal"><div class="calendar-card"><div style="display:flex; justify-content:space-between; align-items:center;"><h3 style="color:#333; margin:0;">Mood History</h3><button class="close-btn" onclick="closeCalendar()" style="margin-top:0; color:#333; border-color:#ccc;">Close</button></div><div id="calendar"></div></div></div>
 
     <canvas id="gm-confetti"></canvas>
     
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            closeAllModals(); 
+
+            if (!localStorage.getItem("seen_tutorial")) {
+                introJs().setOptions({
+                    steps: [
+                        { intro: "👋 Welcome to MindEase! Let me show you around." },
+                        { element: '#chat-form', intro: "Type here or use the 🎤 mic to talk to your AI companion." },
+                        { element: '.gift-btn', intro: "🎁 Click here every day for a surprise positive boost!" },
+                        { element: document.querySelector('button[onclick="openTools()"]'), intro: "🛠️ Open the Toolkit to find ZenStory, Games, and Focus tools." },
+                        { element: '.emergency-btn', intro: "🚨 Quick access to emergency help is always here." }
+                    ]
+                }).start();
+                localStorage.setItem("seen_tutorial", "true");
+            }
+        });
+
         const chatBox = document.getElementById("chat-box");
         let voices = [];
         function loadVoices() { voices = window.speechSynthesis.getVoices(); }
         window.speechSynthesis.onvoiceschanged = loadVoices;
         loadVoices();
-
 
         const savedLang = "{{ user_settings.get('language', 'en-US') }}";
         const langSelect = document.getElementById("language-select");
@@ -353,25 +408,9 @@
             });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            if (!localStorage.getItem("seen_tutorial")) {
-                introJs().setOptions({
-                    steps: [
-                        { intro: "👋 Welcome to MindEase! Let me show you around." },
-                        { element: '#chat-form', intro: "Type here or use the 🎤 mic to talk to your AI companion." },
-                        { element: '.gift-btn', intro: "🎁 Click here every day for a surprise positive boost!" },
-                        { element: document.querySelector('button[onclick="openTools()"]'), intro: "🛠️ Open the Toolkit to find ZenStory, Games, and Focus tools." },
-                        { element: '.emergency-btn', intro: "🚨 Quick access to emergency help is always here." }
-                    ]
-                }).start();
-                localStorage.setItem("seen_tutorial", "true");
-            }
-        });
-
         function openGift() {
             document.getElementById("gift-modal").style.display = "flex";
             document.getElementById("gift-content").innerText = "Unwrapping...";
-            
             fetch('/api/daily_gift')
                 .then(res => res.json())
                 .then(data => {
@@ -443,7 +482,6 @@
             }
         });
 
-        // Dark Mode Logic
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const icon = document.getElementById('dark-icon');
@@ -460,22 +498,6 @@
         
         function openTools() { closeAllModals(); document.getElementById("tools-modal").style.display = "flex"; }
         function closeTools() { document.getElementById("tools-modal").style.display = "none"; }
-
-        function openCalendar() {
-            closeTools();
-            document.getElementById("calendar-modal").style.display = "flex";
-            setTimeout(() => {
-                var calendarEl = document.getElementById('calendar');
-                var calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    height: '100%',
-                    headerToolbar: { start: 'prev,next', center: 'title', end: 'today' },
-                    events: '/api/user_mood_history'
-                });
-                calendar.render();
-            }, 100); 
-        }
-        function closeCalendar() { document.getElementById("calendar-modal").style.display = "none"; }
 
         function openZen() { closeTools(); document.getElementById("zen-modal").style.display = "flex"; document.getElementById("zen-input-box").style.display = "block"; document.getElementById("zen-story-display").style.display = "none"; document.getElementById("zen-story-display").innerText = ""; }
         function closeZen() { closeAllModals(); }
@@ -594,13 +616,61 @@
             sb_interval = setInterval(() => { sb_time--; document.getElementById('sb_time').innerText=sb_time; if(sb_time<=0) { clearInterval(sb_interval); alert('Game Over! Score: '+sb_score); setHS('bubbles', sb_score); } else spawnBubble(); }, 1000); spawnBubble(); }
         function spawnBubble() { const b = document.createElement('div'); b.className='gm-bubble'; const s = Math.random()*40+30; b.style.width=s+'px'; b.style.height=s+'px'; b.style.left=Math.random()*90+'%'; b.style.top=Math.random()*80+'%'; b.style.background=`hsl(${Math.random()*360},70%,60%)`; b.innerText = Math.floor(100/s); 
             b.onclick = function() { sb_score+=parseInt(this.innerText); document.getElementById('sb_score').innerText=sb_score; this.remove(); }; document.getElementById('gm-playfield').appendChild(b); setTimeout(()=>b.remove(), 2000); }
+        
+        function sb_stop() {
+            clearInterval(sb_interval);
+            alert('Game Paused. Click Start to resume.');
+        }
+
+        function sb_reset() {
+            clearInterval(sb_interval);
+            sb_score = 0;
+            sb_time = 30;
+            document.getElementById('sb_score').innerText = 0;
+            document.getElementById('sb_time').innerText = 30;
+            document.getElementById('gm-playfield').innerHTML = '';
+        }
 
         let cm_score=0, cm_time=30, cm_timer;
         function cm_start() { cm_score=0; cm_time=30; document.getElementById('cm_score').innerText=0; document.getElementById('cm_time').innerText=30; cm_build(); 
             cm_timer = setInterval(() => { cm_time--; document.getElementById('cm_time').innerText=cm_time; if(cm_time<=0) { clearInterval(cm_timer); alert('Game Over! Score: '+cm_score); setHS('color', cm_score); } }, 1000); }
-        function cm_build() { const grid = document.getElementById('cm_grid'); grid.innerHTML=''; const hue = Math.floor(Math.random()*360); const target = `hsl(${hue},70%,50%)`; document.getElementById('cm_target').style.background=target; const correct = Math.floor(Math.random()*9); 
-            for(let i=0; i<9; i++) { const t = document.createElement('div'); t.className='game-tile'; t.style.background = i===correct ? target : `hsl(${hue + (Math.random()*40-20)},70%,50%)`; 
-            t.onclick = function() { if(i===correct) { cm_score++; document.getElementById('cm_score').innerText=cm_score; cm_build(); } }; grid.appendChild(t); } }
+        function cm_build() { const grid = document.getElementById('cm_grid'); grid.innerHTML=''; 
+            const hue = Math.floor(Math.random()*360); 
+            const target = `hsl(${hue},70%,50%)`; 
+            document.getElementById('cm_target').style.background=target; 
+            const correct = Math.floor(Math.random()*9); 
+            
+            for(let i=0; i<9; i++) { 
+                const t = document.createElement('div'); 
+                t.className='game-tile'; 
+                t.style.background = i===correct ? target : `hsl(${hue + (Math.random()*40-20)},70%,50%)`; 
+                t.setAttribute('data-correct', i===correct);
+                
+                t.onclick = function() { 
+                    if(this.getAttribute('data-correct') === 'true') { 
+                        cm_score++; 
+                        document.getElementById('cm_score').innerText=cm_score; 
+                        cm_build(); 
+                    } 
+                }; 
+                grid.appendChild(t); 
+            } 
+        }
+        
+        function cm_stop() {
+            clearInterval(cm_timer);
+            alert('Game Paused. Click Start to resume.');
+        }
+
+        function cm_reset() {
+            clearInterval(cm_timer);
+            cm_score = 0;
+            cm_time = 30;
+            document.getElementById('cm_score').innerText = 0;
+            document.getElementById('cm_time').innerText = 30;
+            document.getElementById('cm_grid').innerHTML = '';
+            document.getElementById('cm_target').style.background = 'none';
+        }
 
         let mem_cards=[], mem_flipped=[], mem_moves=0, mem_matches=0;
         const syms = ['★','●','▲','■','◆','♥','♣','✿'];
@@ -611,9 +681,57 @@
                     this.classList.add('flipped'); mem_flipped.push({el:this, val:s}); 
                     if(mem_flipped.length===2) { mem_moves++; document.getElementById('mem_moves').innerText=mem_moves; setTimeout(checkMem, 800); } }; grid.appendChild(c); }); }
         function checkMem() { if(mem_flipped[0].val === mem_flipped[1].val) { mem_matches++; if(mem_matches===8) { alert('You Won! Moves: '+mem_moves); setHS('mem', mem_moves); } } else { mem_flipped.forEach(c=>c.el.classList.remove('flipped')); } mem_flipped=[]; }
+        
+        function mem_reset() {
+            document.getElementById('mem_grid').innerHTML = '';
+            mem_moves = 0;
+            mem_matches = 0;
+            document.getElementById('mem_moves').innerText = 0;
+            mem_flipped = [];
+        }
+
+        function promptFeedback(event) {
+            event.preventDefault(); 
+            closeAllModals(); 
+            document.getElementById('feedback-modal').style.display = 'flex';
+        }
+
+        function continueLogout() {
+            window.location.href = '/logout';
+        }
+
+        async function submitFeedbackAndLogout() {
+            const feedbackText = document.getElementById('feedback-input').value.trim();
+            if (feedbackText.length > 0) {
+                try {
+                    await fetch('/api/submit_feedback', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ feedback: feedbackText })
+                    });
+                } catch (e) { console.error("Failed to submit feedback:", e); }
+            }
+            continueLogout();
+        }
+
+        function openCalendar() {
+            closeTools();
+            document.getElementById("calendar-modal").style.display = "flex";
+            setTimeout(() => {
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    height: '100%',
+                    headerToolbar: { start: 'prev,next', center: 'title', end: 'today' },
+                    events: '/api/user_mood_history'
+                });
+                calendar.render();
+            }, 100); 
+        }
+        function closeCalendar() { document.getElementById("calendar-modal").style.display = "none"; }
 
     </script>
-
+  
 </body>
 
 </html>
