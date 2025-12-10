@@ -2,8 +2,15 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_cors import CORS
 from textblob import TextBlob
 import os
+
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 import csv
 import io
+import cv2
+import numpy as np
+import base64
+from deepface import DeepFace
 from fpdf import FPDF
 from dotenv import load_dotenv
 
@@ -79,7 +86,6 @@ def register():
 @app.route('/chat')
 def chat():
     if 'user_email' not in session: return redirect(url_for('login'))
-    # Load user settings to pass to template
     user = get_user(session['user_email'])
     settings = user.get('settings', {'language': 'en-US'}) if user else {'language': 'en-US'}
     return render_template('chat.html', username=session.get('user_name'), user_settings=settings)
@@ -89,20 +95,57 @@ def chat_message():
     data = request.get_json()
     user_message = data.get('message')
     user_email = session.get('user_email', 'anonymous') 
+    
+    user = get_user(user_email)
+    settings = user.get('settings', {}) if user else {}
+    lang_code = settings.get('language', 'en-US')
+
+    lang_map = {
+        'en-US': 'English',
+        'hi-IN': 'Hindi',
+        'es-ES': 'Spanish',
+        'fr-FR': 'French'
+    }
+    target_language = lang_map.get(lang_code, 'English')
+
     blob = TextBlob(user_message)
     polarity = blob.sentiment.polarity 
     if polarity > 0.1: sentiment = "Positive"
     elif polarity < -0.1: sentiment = "Negative"
     else: sentiment = "Neutral"
+    
     save_chat_log(user_email, user_message, sentiment)
+    
     history = session.get('history', [])
-    bot_reply = get_llm_response(user_message, history)
+    
+    bot_reply = get_llm_response(user_message, history, target_language)
+    
     history.append({"role": "user", "content": user_message})
     history.append({"role": "assistant", "content": bot_reply})
     if len(history) > 10: history = history[-10:]
     session['history'] = history
     session.modified = True 
+    
     return jsonify({'reply': bot_reply})
+
+@app.route('/analyze_face', methods=['POST'])
+def analyze_face():
+    try:
+        data = request.get_json()
+        image_data = data.get('image')
+        if not image_data: return jsonify({'error': 'No image provided'}), 400
+
+        encoded_data = image_data.split(',')[1]
+        nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        analysis = DeepFace.analyze(img, actions=['emotion'], enforce_detection=False)
+        dominant_emotion = analysis[0]['dominant_emotion']
+        
+        return jsonify({'status': 'success', 'emotion': dominant_emotion})
+    except Exception as e:
+        print(f"Face Analysis Error: {e}")
+        return jsonify({'status': 'error', 'emotion': 'neutral'})
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
@@ -131,7 +174,6 @@ def user_mood_history():
         events.append({'title': log['sentiment'], 'start': log['date'], 'color': color, 'extendedProps': {'msg': log['message']}})
     return jsonify(events)
 
-
 @app.route('/api/save_settings', methods=['POST'])
 def save_settings_route():
     if 'user_email' not in session: return jsonify({'status': 'error'})
@@ -148,7 +190,6 @@ def get_daily_gift():
         return jsonify({'status': 'already_claimed', 'message': "You've already unwrapped your gift today! Come back tomorrow. 🎁"})
     
     gift_text = generate_daily_gift()
-    
     claim_daily_gift(session['user_email'])
     
     return jsonify({'status': 'success', 'gift': gift_text})

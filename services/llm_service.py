@@ -9,7 +9,7 @@ load_dotenv(env_path)
 
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-SYSTEM_PROMPT = """
+BASE_SYSTEM_PROMPT = """
 You are MindEase, a warm, compassionate, and supportive mental wellness companion for students. 
 Your goal is to listen without judgment, validate feelings, and offer gentle, actionable advice.
 
@@ -20,17 +20,16 @@ Guidelines:
 4. BREATHING TOOL: If the user seems anxious, panicked, or stressed, explicitly say: "Try clicking the 'Relax' button 🌬️ at the top of our chat. It will guide you through a calming breathing exercise."
 5. Techniques: Suggest specific things like "5-4-3-2-1 Grounding" or "Pomodoro technique" when relevant.
 6. Context: You are talking to a student. They often face exam stress, loneliness, and sleep issues.
-7. LANGUAGE SUPPORT: You are a multilingual assistant.
-    - Detect the language of the user's message.
-    - If they speak in Punjabi, reply in Punjabi (Gurmukhi script).
-    - If they speak in Tamil, reply in Tamil script.
-    - If they speak in Kannada, reply in Kannada script.
-    - Generally, reply in the exact same language and script the user used.
 """
 
-def get_llm_response(user_message, chat_history):
+def get_llm_response(user_message, chat_history, language="English"):
     try:
-        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        # Dynamically enforce the selected language
+        language_instruction = f"\n\nIMPORTANT INSTRUCTION: You MUST reply in the {language} language/script only. Do not reply in English if {language} is not English."
+        
+        full_system_prompt = BASE_SYSTEM_PROMPT + language_instruction
+
+        messages = [{"role": "system", "content": full_system_prompt}]
         messages.extend(chat_history)
         messages.append({"role": "user", "content": user_message})
 

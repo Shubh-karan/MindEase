@@ -144,9 +144,10 @@
         
         .lang-select { padding: 10px; border-radius: 12px; border: none; outline: none; font-family: 'Poppins', sans-serif; cursor: pointer; background: rgba(255,255,255,0.9); color: #333; max-width: 100px; font-size: 0.85rem; }
         
-        .mic-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: white; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
-        .mic-btn:hover { background: rgba(255,255,255,0.3); }
+        .icon-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: white; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
+        .icon-btn:hover { background: rgba(255,255,255,0.3); }
         .mic-btn.recording { background: #ff5252; animation: pulse 1.5s infinite; }
+        
         .send-btn { padding: 12px 25px; background: linear-gradient(90deg, #00d2ff, #3a7bd5); border: none; color: white; border-radius: 30px; font-size: 1rem; cursor: pointer; transition: 0.3s; font-weight: 600; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3); }
         .send-btn:hover { transform: scale(1.05); }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -218,6 +219,10 @@
         .fc-button { background-color: #00d2ff !important; border: none !important; font-weight: 500 !important; text-transform: capitalize !important; }
 
         #gm-confetti { position: fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:3000; display:none; }
+        
+        #camera-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2500; flex-direction: column; align-items: center; justify-content: center; }
+        #video-feed { width: 90%; max-width: 640px; border-radius: 15px; border: 2px solid #00d2ff; background: #000; }
+        #camera-status { margin-top: 15px; font-size: 1.2rem; color: #00d2ff; min-height: 25px; }
 
         @media (max-width: 768px) {
             .header { padding: 15px; }
@@ -267,11 +272,23 @@
             <option value="fr-FR">French</option>
         </select>
 
-        <input type="text" id="user-input" placeholder="Type or speak..." autocomplete="off"/>
+        <button type="button" class="icon-btn" onclick="openCamera()" title="Scan Face Emotion">📷</button>
+        <button type="button" id="mic-btn" class="icon-btn mic-btn" onclick="toggleRecording()">🎤</button>
         
-        <button type="button" id="mic-btn" class="mic-btn" onclick="toggleRecording()">🎤</button>
+        <input type="text" id="user-input" placeholder="Type or speak..." autocomplete="off"/>
         <button type="submit" class="send-btn">Send</button>
     </form>
+
+    <div id="camera-modal">
+        <h3 style="color: white; margin-bottom: 20px;">Facial Emotion Analysis</h3>
+        <video id="video-feed" autoplay playsinline></video>
+        <div id="camera-status">Align your face...</div>
+        <div style="margin-top: 20px; display: flex; gap: 20px;">
+            <button class="em-btn em-loc" style="width: auto; justify-content: center; padding: 10px 30px;" onclick="captureFace()">Analyze Mood</button>
+            <button class="em-btn em-close" style="width: auto; justify-content: center; padding: 10px 30px; margin-top: 0;" onclick="closeCamera()">Cancel</button>
+        </div>
+        <canvas id="camera-canvas" style="display:none;"></canvas>
+    </div>
 
     <div id="tools-modal" class="modal-overlay">
         <div class="gm-card" style="max-width: 500px; background: rgba(30, 30, 40, 0.95); border: 1px solid rgba(255,255,255,0.1);">
@@ -364,6 +381,7 @@
                     steps: [
                         { intro: "👋 Welcome to MindEase! Let me show you around." },
                         { element: '#chat-form', intro: "Type here or use the 🎤 mic to talk to your AI companion." },
+                        { element: '.icon-btn', intro: "📷 Use the Camera button to let MindEase analyze your facial expression!" },
                         { element: '.gift-btn', intro: "🎁 Click here every day for a surprise positive boost!" },
                         { element: document.querySelector('button[onclick="openTools()"]'), intro: "🛠️ Open the Toolkit to find ZenStory, Games, and Focus tools." },
                         { element: '.emergency-btn', intro: "🚨 Quick access to emergency help is always here." }
@@ -463,11 +481,7 @@
             }
         }
 
-        document.getElementById("chat-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const input = document.getElementById("user-input");
-            const message = input.value.trim(); if (!message) return;
-            addMessage(message, "user"); input.value = "";
+        async function sendMessageToServer(message) {
             const loadingDiv = document.createElement("div"); loadingDiv.className = "bubble bot"; loadingDiv.textContent = "..."; loadingDiv.id = "loading-bubble";
             chatBox.appendChild(loadingDiv); chatBox.scrollTop = chatBox.scrollHeight;
             try {
@@ -480,7 +494,76 @@
                 if(document.getElementById("loading-bubble")) document.getElementById("loading-bubble").remove();
                 addMessage("Connection error.", "bot");
             }
+        }
+
+        document.getElementById("chat-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const input = document.getElementById("user-input");
+            const message = input.value.trim(); if (!message) return;
+            addMessage(message, "user"); input.value = "";
+            sendMessageToServer(message);
         });
+
+        let videoStream;
+        function openCamera() {
+            const modal = document.getElementById("camera-modal");
+            const video = document.getElementById("video-feed");
+            const status = document.getElementById("camera-status");
+            modal.style.display = "flex";
+            status.innerText = "Align your face...";
+            
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                videoStream = stream;
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                status.innerText = "Camera access denied.";
+            });
+        }
+
+        function closeCamera() {
+            const modal = document.getElementById("camera-modal");
+            modal.style.display = "none";
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        function captureFace() {
+            const video = document.getElementById("video-feed");
+            const canvas = document.getElementById("camera-canvas");
+            const status = document.getElementById("camera-status");
+            
+            if (!videoStream) return;
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            const imageData = canvas.toDataURL('image/jpeg');
+            status.innerText = "Analyzing emotion... please wait.";
+            
+            fetch('/analyze_face', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: imageData })
+            })
+            .then(res => res.json())
+            .then(data => {
+                closeCamera();
+                if (data.status === 'success') {
+                    const emotion = data.emotion;
+                    const userMsg = `[System Analysis] My facial expression indicates I am feeling ${emotion}.`;
+                    sendMessageToServer(userMsg); 
+                } else {
+                    alert("Could not detect emotion. Try better lighting.");
+                }
+            })
+            .catch(err => {
+                status.innerText = "Error analyzing face.";
+            });
+        }
 
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
@@ -493,7 +576,7 @@
         }
 
         function closeAllModals() {
-            document.querySelectorAll('.modal-overlay, .gm-modal, #calendar-modal').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.modal-overlay, .gm-modal, #calendar-modal, #camera-modal').forEach(el => el.style.display = 'none');
         }
         
         function openTools() { closeAllModals(); document.getElementById("tools-modal").style.display = "flex"; }
