@@ -24,7 +24,6 @@ Guidelines:
 
 def get_llm_response(user_message, chat_history, language="English"):
     try:
-        # Dynamically enforce the selected language
         language_instruction = f"\n\nIMPORTANT INSTRUCTION: You MUST reply in the {language} language/script only. Do not reply in English if {language} is not English."
         
         full_system_prompt = BASE_SYSTEM_PROMPT + language_instruction
