@@ -9,9 +9,13 @@ def send_sos_email(user_email, user_name, latitude, longitude):
     smtp_server = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
     smtp_port = int(os.environ.get("MAIL_PORT", 587))
     
-    receiver_email = "shubhkaran255@gmail.com" 
+    if not sender_email or not sender_password:
+        print("Error: EMAIL credentials missing in .env file.")
+        return False
 
-    maps_link = f"https://www.google.com/maps?q={latitude},{longitude}"
+    receiver_email = "soleindianguy@gmail.com" 
+
+    maps_link = f"http://maps.google.com/?q={latitude},{longitude}"
     
     subject = f"🚨 SOS ALERT: {user_name} needs help!"
     
