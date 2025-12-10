@@ -90,6 +90,16 @@
         .emergency-btn { background: rgba(255, 82, 82, 0.2); border-color: rgba(255, 82, 82, 0.5); color: #ffcbcb; font-weight: 600; }
         .emergency-btn:hover { background: rgba(255, 82, 82, 0.4); }
         
+        /* New Camera Enable Button Style - Moved to Header */
+        .camera-enable-btn {
+            background: rgba(0, 210, 255, 0.2);
+            border-color: rgba(0, 210, 255, 0.5);
+            color: #b3ecff;
+        }
+        .camera-enable-btn:hover {
+            background: rgba(0, 210, 255, 0.4);
+        }
+
         .logout-icon { 
             text-decoration: none; 
             color: rgba(255,255,255,0.8);
@@ -137,6 +147,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .user { align-self: flex-end; background-color: #00d2ff; color: #00334e; border-bottom-right-radius: 2px; font-weight: 500; }
         .bot { align-self: flex-start; background-color: var(--bot-bubble-bg); color: var(--bot-text); border-bottom-left-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .system-msg { align-self: center; background: rgba(0,0,0,0.2); color: #ccc; font-size: 0.85rem; padding: 5px 15px; border-radius: 20px; }
 
         form { display: flex; padding: 20px; background: var(--input-bg); backdrop-filter: blur(10px); align-items: center; gap: 10px; transition: 0.3s; }
         input { flex: 1; padding: 15px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; outline: none; font-family: 'Poppins', sans-serif; font-size: 1rem; transition: 0.3s; }
@@ -144,11 +155,11 @@
         
         .lang-select { padding: 10px; border-radius: 12px; border: none; outline: none; font-family: 'Poppins', sans-serif; cursor: pointer; background: rgba(255,255,255,0.9); color: #333; max-width: 100px; font-size: 0.85rem; }
         
-        .icon-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: white; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
+        .icon-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: rgba(255,255,255,0.15); color: white; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; min-width: 50px; }
         .icon-btn:hover { background: rgba(255,255,255,0.3); }
         .mic-btn.recording { background: #ff5252; animation: pulse 1.5s infinite; }
         
-        .send-btn { padding: 12px 25px; background: linear-gradient(90deg, #00d2ff, #3a7bd5); border: none; color: white; border-radius: 30px; font-size: 1rem; cursor: pointer; transition: 0.3s; font-weight: 600; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3); }
+        .send-btn { padding: 12px 25px; background: linear-gradient(90deg, #00d2ff, #3a7bd5); border: none; color: white; border-radius: 30px; font-size: 1rem; cursor: pointer; transition: 0.3s; font-weight: 600; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3); white-space: nowrap; }
         .send-btn:hover { transform: scale(1.05); }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
@@ -220,10 +231,18 @@
 
         #gm-confetti { position: fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:3000; display:none; }
         
-        #camera-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2500; flex-direction: column; align-items: center; justify-content: center; }
-        #video-feed { width: 90%; max-width: 640px; border-radius: 15px; border: 2px solid #00d2ff; background: #000; }
-        #camera-status { margin-top: 15px; font-size: 1.2rem; color: #00d2ff; min-height: 25px; }
+        .floating-camera { position: fixed; bottom: 20px; right: 20px; width: 150px; height: 110px; border-radius: 10px; overflow: hidden; border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 900; background: black; transition: 0.3s; }
+        .floating-camera:hover { transform: scale(1.05); border-color: #00d2ff; }
+        #live-video { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* New Debug Overlay on Video */
+        #cam-debug-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.6); color: #00d2ff; font-size: 0.8rem; padding: 4px; text-align: center; font-weight: bold; }
 
+        #therapist-modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 2300; justify-content: center; align-items: center; }
+        .therapist-card { width: 90%; max-width: 500px; background: white; color: #333; padding: 25px; border-radius: 15px; }
+        .therapist-list { max-height: 300px; overflow-y: auto; margin: 15px 0; }
+        .t-item { background: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 10px; border-left: 4px solid #00d2ff; }
+        
         @media (max-width: 768px) {
             .header { padding: 15px; }
             .header h2 { font-size: 1.8rem; }
@@ -233,6 +252,7 @@
             .story-container { width: 90%; font-size: 1.2rem; }
             form { flex-wrap: wrap; }
             input { width: 100%; }
+            .floating-camera { width: 100px; height: 75px; bottom: 80px; }
         }
     </style>
 </head>
@@ -242,6 +262,10 @@
     <div class="header">
         <h2>MindEase</h2>
         <div class="header-right">
+            <button class="header-btn camera-enable-btn" id="camera-permission-btn" onclick="enableCamera()" title="Enable Emotion AI">
+                <span>📷</span> <span class="header-btn-text">Enable Cam</span>
+            </button>
+            
             <button class="header-btn gift-btn" onclick="openGift()" title="Daily Gift" data-intro="Click here daily for a mental health boost! 🎁">
                 <span>🎁</span> <span class="header-btn-text">Gift</span>
             </button>
@@ -272,23 +296,17 @@
             <option value="fr-FR">French</option>
         </select>
 
-        <button type="button" class="icon-btn" onclick="openCamera()" title="Scan Face Emotion">📷</button>
         <button type="button" id="mic-btn" class="icon-btn mic-btn" onclick="toggleRecording()">🎤</button>
         
         <input type="text" id="user-input" placeholder="Type or speak..." autocomplete="off"/>
         <button type="submit" class="send-btn">Send</button>
     </form>
 
-    <div id="camera-modal">
-        <h3 style="color: white; margin-bottom: 20px;">Facial Emotion Analysis</h3>
-        <video id="video-feed" autoplay playsinline></video>
-        <div id="camera-status">Align your face...</div>
-        <div style="margin-top: 20px; display: flex; gap: 20px;">
-            <button class="em-btn em-loc" style="width: auto; justify-content: center; padding: 10px 30px;" onclick="captureFace()">Analyze Mood</button>
-            <button class="em-btn em-close" style="width: auto; justify-content: center; padding: 10px 30px; margin-top: 0;" onclick="closeCamera()">Cancel</button>
-        </div>
-        <canvas id="camera-canvas" style="display:none;"></canvas>
+    <div class="floating-camera" id="floating-cam" style="display: none;">
+        <video id="live-video" autoplay playsinline muted></video>
+        <div id="cam-debug-overlay">Waiting...</div>
     </div>
+    <canvas id="hidden-canvas" style="display:none;"></canvas>
 
     <div id="tools-modal" class="modal-overlay">
         <div class="gm-card" style="max-width: 500px; background: rgba(30, 30, 40, 0.95); border: 1px solid rgba(255,255,255,0.1);">
@@ -328,7 +346,7 @@
         <div class="emergency-box">
             <h2 style="color:#c62828; margin-top:0;">⚠️ Emergency</h2>
             <p>If you are in danger, use these options.</p>
-            <button class="em-btn em-loc" onclick="shareLocation()">📍 Share My Location</button>
+            <button class="em-btn em-loc" onclick="sendSOS()">🚨 Send SOS Alert (Email + Loc)</button>
             <a href="tel:112" style="text-decoration:none;"><button class="em-btn em-call">📞 Call Emergency (112)</button></a>
             <button class="em-btn em-help" onclick="openContacts()">👥 Emergency Contacts</button>
             <div id="helpline-list" style="text-align:left; margin-top:12px; background:#fafafa; padding:10px; border-radius:8px;">
@@ -350,6 +368,15 @@
             <button class="em-btn em-loc" onclick="saveContact()" style="justify-content:center;">Save Contact</button>
             <div id="saved-contacts" style="text-align:left; margin-top:20px; max-height: 150px; overflow-y:auto;"></div>
             <button class="em-btn em-close" onclick="closeContacts()">Back</button>
+        </div>
+    </div>
+
+    <div id="therapist-modal">
+        <div class="therapist-card">
+            <h3 style="margin-top: 0;">Therapists Nearby</h3>
+            <p style="font-size:0.9rem; color:#666;">Based on your current mood analysis.</p>
+            <div class="therapist-list" id="t-list"></div>
+            <button class="em-btn em-close" onclick="closeTherapist()">Close</button>
         </div>
     </div>
 
@@ -381,8 +408,8 @@
                     steps: [
                         { intro: "👋 Welcome to MindEase! Let me show you around." },
                         { element: '#chat-form', intro: "Type here or use the 🎤 mic to talk to your AI companion." },
-                        { element: '.icon-btn', intro: "📷 Use the Camera button to let MindEase analyze your facial expression!" },
-                        { element: '.gift-btn', intro: "🎁 Click here every day for a surprise positive boost!" },
+                        { element: '#camera-permission-btn', intro: "📷 Enable Emotion AI to let MindEase see how you feel in real-time." },
+                        { element: '.gift-btn', intro: "🎁 Click here daily for a surprise positive boost!" },
                         { element: document.querySelector('button[onclick="openTools()"]'), intro: "🛠️ Open the Toolkit to find ZenStory, Games, and Focus tools." },
                         { element: '.emergency-btn', intro: "🚨 Quick access to emergency help is always here." }
                     ]
@@ -505,44 +532,48 @@
         });
 
         let videoStream;
-        function openCamera() {
-            const modal = document.getElementById("camera-modal");
-            const video = document.getElementById("video-feed");
-            const status = document.getElementById("camera-status");
-            modal.style.display = "flex";
-            status.innerText = "Align your face...";
+        let monitoringInterval;
+        let negativeCount = 0;
+
+        function enableCamera() {
+            const video = document.getElementById("live-video");
+            const btn = document.getElementById("camera-permission-btn");
+            const container = document.getElementById("floating-cam");
+            const debugText = document.getElementById("cam-debug-overlay");
             
             navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
                 videoStream = stream;
                 video.srcObject = stream;
+                container.style.display = "block";
+                btn.style.display = "none";
+                debugText.innerText = "Scanning active...";
+                startPassiveMonitoring();
             })
             .catch(err => {
-                status.innerText = "Camera access denied.";
+                alert("Camera access denied.");
             });
         }
 
-        function closeCamera() {
-            const modal = document.getElementById("camera-modal");
-            modal.style.display = "none";
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-            }
+        function startPassiveMonitoring() {
+            monitoringInterval = setInterval(() => {
+                captureAndAnalyze();
+            }, 8000); 
         }
 
-        function captureFace() {
-            const video = document.getElementById("video-feed");
-            const canvas = document.getElementById("camera-canvas");
-            const status = document.getElementById("camera-status");
+        function captureAndAnalyze() {
+            const video = document.getElementById("live-video");
+            const canvas = document.getElementById("hidden-canvas");
+            const debugText = document.getElementById("cam-debug-overlay");
             
             if (!videoStream) return;
             
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.width = 300; 
+            canvas.height = 200;
+            canvas.getContext('2d').drawImage(video, 0, 0, 300, 200);
             
             const imageData = canvas.toDataURL('image/jpeg');
-            status.innerText = "Analyzing emotion... please wait.";
+            debugText.innerText = "Analyzing...";
             
             fetch('/analyze_face', {
                 method: 'POST',
@@ -551,17 +582,77 @@
             })
             .then(res => res.json())
             .then(data => {
-                closeCamera();
                 if (data.status === 'success') {
                     const emotion = data.emotion;
-                    const userMsg = `[System Analysis] My facial expression indicates I am feeling ${emotion}.`;
-                    sendMessageToServer(userMsg); 
-                } else {
-                    alert("Could not detect emotion. Try better lighting.");
+                    
+                    // Visual Feedback: Update badge
+                    debugText.innerText = `Detected: ${emotion.toUpperCase()}`;
+                    
+                    // Visual Feedback: Log system message in chat
+                    const sysDiv = document.createElement("div");
+                    sysDiv.className = "system-msg";
+                    sysDiv.innerText = `[System] Face analysis: ${emotion}`;
+                    chatBox.appendChild(sysDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    
+                    if (['sad', 'fear', 'angry'].includes(emotion)) {
+                        negativeCount++;
+                        if (negativeCount >= 3) {
+                            fetchTherapists(emotion);
+                            negativeCount = 0;
+                        } else {
+                            const userMsg = `[System] My facial expression indicates I am feeling ${emotion}.`;
+                            sendMessageToServer(userMsg);
+                        }
+                    } else {
+                        negativeCount = 0; 
+                    }
                 }
             })
             .catch(err => {
-                status.innerText = "Error analyzing face.";
+                console.log("Silent analysis failed");
+                debugText.innerText = "Error scanning";
+            });
+        }
+
+        function fetchTherapists(emotion) {
+            fetch('/api/get_therapist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ emotion: emotion })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('t-list');
+                list.innerHTML = "";
+                data.therapists.forEach(t => {
+                    list.innerHTML += `<div class="t-item"><strong>${t.name}</strong><br><small>${t.specialty}</small><br>📍 ${t.location} | ⭐ ${t.rating}</div>`;
+                });
+                document.getElementById('therapist-modal').style.display = "flex";
+                sendMessageToServer(`[System] I've been feeling ${emotion} for a while. Finding help.`);
+            });
+        }
+        
+        function closeTherapist() { document.getElementById('therapist-modal').style.display = "none"; }
+
+        function sendSOS() {
+            if(!navigator.geolocation) return alert('Geolocation not supported');
+            
+            if(!confirm("Are you sure you want to alert the emergency team?")) return;
+
+            navigator.geolocation.getCurrentPosition(pos => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                
+                fetch('/api/sos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ latitude: lat, longitude: lng })
+                })
+                .then(res => res.json())
+                .then(data => alert(data.message));
+            }, () => {
+                alert("Could not get location. SOS cancelled.");
             });
         }
 
@@ -576,7 +667,7 @@
         }
 
         function closeAllModals() {
-            document.querySelectorAll('.modal-overlay, .gm-modal, #calendar-modal, #camera-modal').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.modal-overlay, .gm-modal, #calendar-modal').forEach(el => el.style.display = 'none');
         }
         
         function openTools() { closeAllModals(); document.getElementById("tools-modal").style.display = "flex"; }

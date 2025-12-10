@@ -21,7 +21,9 @@ from services.firebase_service import (
     get_sentiment_stats, get_logs_by_date_range, get_user_sentiment_history,
     update_user_settings, check_daily_gift, claim_daily_gift
 )
-from services.llm_service import get_llm_response, generate_zen_story, transcribe_audio, generate_daily_gift 
+from services.llm_service import get_llm_response, generate_zen_story, transcribe_audio, generate_daily_gift
+from services.email_service import send_sos_email
+from services.therapist_service import find_therapists
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "Everthing is okay")
@@ -146,6 +148,27 @@ def analyze_face():
     except Exception as e:
         print(f"Face Analysis Error: {e}")
         return jsonify({'status': 'error', 'emotion': 'neutral'})
+
+@app.route('/api/sos', methods=['POST'])
+def trigger_sos():
+    if 'user_email' not in session: return jsonify({'status': 'error', 'message': 'Not logged in'})
+    data = request.get_json()
+    lat = data.get('latitude')
+    lng = data.get('longitude')
+    
+    success = send_sos_email(session['user_email'], session.get('user_name', 'User'), lat, lng)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': 'Emergency team notified with your location.'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Failed to send alert. Call 112 directly.'})
+
+@app.route('/api/get_therapist', methods=['POST'])
+def get_therapist():
+    data = request.get_json()
+    emotion = data.get('emotion', 'neutral')
+    therapists = find_therapists(emotion)
+    return jsonify({'status': 'success', 'therapists': therapists})
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
