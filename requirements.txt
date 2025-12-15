@@ -1,4 +1,5 @@
 flask
+flask-cors
 gunicorn
 firebase-admin
 python-dotenv
@@ -9,3 +10,4 @@ tf-keras
 numpy
 requests
 textblob
+fpdf
