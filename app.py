@@ -10,7 +10,7 @@ import io
 import cv2
 import numpy as np
 import base64
-from deepface import DeepFace
+# from deepface import DeepFace
 from fpdf import FPDF
 from dotenv import load_dotenv
 
@@ -133,6 +133,8 @@ def chat_message():
 @app.route('/analyze_face', methods=['POST'])
 def analyze_face():
     try:
+        from deepface import DeepFace
+        
         data = request.get_json()
         image_data = data.get('image')
         if not image_data: return jsonify({'error': 'No image provided'}), 400

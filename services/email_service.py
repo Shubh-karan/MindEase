@@ -1,21 +1,24 @@
 import smtplib
+import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import os
 
 def send_sos_email(user_email, user_name, latitude, longitude):
     sender_email = os.environ.get("MAIL_USERNAME")
     sender_password = os.environ.get("MAIL_PASSWORD")
     smtp_server = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
-    smtp_port = int(os.environ.get("MAIL_PORT", 587))
+    
+    try:
+        smtp_port = int(os.environ.get("MAIL_PORT", 587))
+    except ValueError:
+        smtp_port = 587
     
     if not sender_email or not sender_password:
-        print("Error: EMAIL credentials missing in .env file.")
         return False
 
     receiver_email = "soleindianguy@gmail.com" 
 
-    maps_link = f"http://maps.google.com/?q={latitude},{longitude}"
+    maps_link = f"https://www.google.com/maps?q={latitude},{longitude}"
     
     subject = f"🚨 SOS ALERT: {user_name} needs help!"
     
