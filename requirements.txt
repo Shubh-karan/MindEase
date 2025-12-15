@@ -8,3 +8,4 @@ opencv-python-headless
 tf-keras
 numpy
 requests
+textblob
