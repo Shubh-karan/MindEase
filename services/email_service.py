@@ -1,9 +1,11 @@
 import smtplib
 import os
+import gc
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def send_sos_email(user_email, user_name, latitude, longitude):
+    gc.collect()
     sender_email = os.environ.get("MAIL_USERNAME")
     sender_password = os.environ.get("MAIL_PASSWORD")
     smtp_server = os.environ.get("MAIL_SERVER", "smtp.gmail.com")

@@ -10,7 +10,6 @@ import io
 import cv2
 import numpy as np
 import base64
-# from deepface import DeepFace
 from fpdf import FPDF
 from dotenv import load_dotenv
 

@@ -89,7 +89,7 @@ def generate_daily_gift():
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
             model="llama-3.1-8b-instant",
-            temperature=0.9, # High creativity
+            temperature=0.9,
             max_tokens=50,
         )
         return chat_completion.choices[0].message.content
