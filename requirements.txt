@@ -1,0 +1,10 @@
+flask
+gunicorn
+firebase-admin
+python-dotenv
+groq
+deepface
+opencv-python-headless
+tf-keras
+numpy
+requests
