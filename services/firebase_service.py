@@ -1,12 +1,21 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
+import json
 from datetime import datetime
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 backend_dir = os.path.dirname(current_dir)
 root_dir = os.path.dirname(backend_dir)
 key_filename = "firebase_key.json"
+
+if os.environ.get("FIREBASE_KEY_CONTENT"):
+    print("Creating firebase_key.json from Environment Secret...")
+    with open(os.path.join(root_dir, key_filename), "w") as f:
+        f.write(os.environ.get("FIREBASE_KEY_CONTENT"))
+
+key_path_backend = os.path.join(backend_dir, key_filename)
+key_path_root = os.path.join(root_dir, key_filename)
 
 render_path = "/etc/secrets/firebase_key.json"
 local_backend_path = os.path.join(backend_dir, key_filename)
@@ -24,18 +33,15 @@ elif os.path.exists(local_root_path):
     key_path = local_root_path
     print("✅ Detected Local Root path.")
 else:
-    print(f"❌ CRITICAL ERROR: Could not find {key_filename} in any location.")
+    print(f"❌ ERROR: Could not find {key_filename}")
+    key_path = None
 
-if not firebase_admin._apps:
-    if key_path:
-        try:
-            cred = credentials.Certificate(key_path)
-            firebase_admin.initialize_app(cred)
-            print("🚀 Firebase initialized successfully.")
-        except Exception as e:
-            print(f"❌ Error loading certificate: {e}")
-    else:
-        print("⚠️ Firebase NOT initialized. App may crash on DB access.")
+if not firebase_admin._apps and key_path:
+    try:
+        cred = credentials.Certificate(key_path)
+        firebase_admin.initialize_app(cred)
+    except Exception as e:
+        print(f"⚠️ Firebase Init Error: {e}")
 
 db = firestore.client()
 
