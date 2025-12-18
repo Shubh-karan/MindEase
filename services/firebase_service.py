@@ -1,6 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
+import json
 from datetime import datetime
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -8,6 +9,12 @@ backend_dir = os.path.dirname(current_dir)
 root_dir = os.path.dirname(backend_dir)
 
 key_filename = "firebase_key.json"
+
+if os.environ.get("FIREBASE_KEY_CONTENT"):
+    print("Creating firebase_key.json from Environment Secret...")
+    with open(os.path.join(root_dir, key_filename), "w") as f:
+        f.write(os.environ.get("FIREBASE_KEY_CONTENT"))
+
 key_path_backend = os.path.join(backend_dir, key_filename)
 key_path_root = os.path.join(root_dir, key_filename)
 
@@ -17,13 +24,14 @@ elif os.path.exists(key_path_root):
     key_path = key_path_root
 else:
     print(f"❌ ERROR: Could not find {key_filename}")
+    key_path = None
 
-if not firebase_admin._apps:
-    if os.path.exists(key_path):
+if not firebase_admin._apps and key_path:
+    try:
         cred = credentials.Certificate(key_path)
         firebase_admin.initialize_app(cred)
-    else:
-        print("⚠️ Firebase NOT initialized due to missing key.")
+    except Exception as e:
+        print(f"⚠️ Firebase Init Error: {e}")
 
 db = firestore.client()
 

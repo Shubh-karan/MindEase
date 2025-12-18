@@ -1,0 +1,12 @@
+flask
+flask-cors
+textblob
+opencv-python-headless
+numpy
+deepface
+fpdf
+python-dotenv
+firebase-admin
+groq
+gunicorn
+tf-keras
