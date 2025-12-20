@@ -12,7 +12,6 @@ def _send_email_thread(user_email, user_name, latitude, longitude):
     api_key = os.environ.get("BREVO_API_KEY")
     sender_email = os.environ.get("MAIL_USERNAME")
     
-    # Destination email
     receiver_email = "soleindianguy@gmail.com" 
 
     if not api_key or not sender_email:
@@ -21,10 +20,8 @@ def _send_email_thread(user_email, user_name, latitude, longitude):
 
     maps_link = f"http://maps.google.com/?q={latitude},{longitude}"
     
-    # API Endpoint (HTTPS Port 443 - Allowed on Hugging Face)
     url = "https://api.brevo.com/v3/smtp/email"
 
-    # JSON Payload
     payload = {
         "sender": {
             "name": "MindEase SOS",

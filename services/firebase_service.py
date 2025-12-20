@@ -7,7 +7,6 @@ from datetime import datetime
 current_dir = os.path.dirname(os.path.abspath(__file__))
 backend_dir = os.path.dirname(current_dir)
 root_dir = os.path.dirname(backend_dir)
-
 key_filename = "firebase_key.json"
 
 if os.environ.get("FIREBASE_KEY_CONTENT"):
@@ -18,10 +17,21 @@ if os.environ.get("FIREBASE_KEY_CONTENT"):
 key_path_backend = os.path.join(backend_dir, key_filename)
 key_path_root = os.path.join(root_dir, key_filename)
 
-if os.path.exists(key_path_backend):
-    key_path = key_path_backend
-elif os.path.exists(key_path_root):
-    key_path = key_path_root
+render_path = "/etc/secrets/firebase_key.json"
+local_backend_path = os.path.join(backend_dir, key_filename)
+local_root_path = os.path.join(root_dir, key_filename)
+
+key_path = None
+
+if os.path.exists(render_path):
+    key_path = render_path
+    print("✅ Detected Render Cloud Environment. Using secret key.")
+elif os.path.exists(local_backend_path):
+    key_path = local_backend_path
+    print("✅ Detected Local Backend path.")
+elif os.path.exists(local_root_path):
+    key_path = local_root_path
+    print("✅ Detected Local Root path.")
 else:
     print(f"❌ ERROR: Could not find {key_filename}")
     key_path = None
