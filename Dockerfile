@@ -1,31 +1,27 @@
-# Use Python 3.9
-FROM python:3.9
+FROM python:3.10
 
-# Set the working directory
-WORKDIR /app
+ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies required for OpenCV and DeepFace
+WORKDIR /code
+
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python dependencies
 COPY requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
 COPY . .
 
-# Create a writable directory for DeepFace weights and temporary files
-RUN mkdir -p /app/.deepface && chmod -R 777 /app/.deepface
-ENV DEEPFACE_HOME=/app/.deepface
+RUN mkdir -p /code/.deepface && chmod -R 777 /code/.deepface
+ENV DEEPFACE_HOME=/code/.deepface
 
-# Create a writable directory for file uploads/temp generation
-RUN chmod -R 777 /app
+RUN chmod -R 777 /code
 
-# Expose the port Hugging Face expects
 EXPOSE 7860
 
-# Command to run the application using Gunicorn (Production server)
 CMD ["gunicorn", "-b", "0.0.0.0:7860", "app:app", "--timeout", "120"]
+
+CMD ["gunicorn", "-b", "0.0.0.0:7860", "app:app", "--timeout", "120", "--access-logfile", "-"]
