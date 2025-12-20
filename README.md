@@ -50,14 +50,6 @@ Experience the app directly in your browser:
 
 ---
 
-## 📸 Screenshots
-
-*(Add your screenshots here later! Ideally one of the Chat Interface and one of the SOS Email)*
-
-| **Emotion Detection** | **SOS Alert System** |
-| :---: | :---: |
-| ![Emotion Detection](https://via.placeholder.com/400x200?text=Webcam+Face+Analysis) | ![SOS Alert](https://via.placeholder.com/400x200?text=Emergency+Email+Alert) |
-
 ---
 
 ## 💻 Installation (Run Locally)
